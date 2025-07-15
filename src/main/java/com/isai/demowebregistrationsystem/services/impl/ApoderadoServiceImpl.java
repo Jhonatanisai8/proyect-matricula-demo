@@ -340,11 +340,24 @@ public class ApoderadoServiceImpl implements ApoderadoService {
                                 );
                     }
                     
-                    matriculaOptional.ifPresent(matricula -> idMatriculaActualRef.set(matricula.getIdMatricula()));
+                    // Si no encuentra pendiente, buscar cualquier otra matrícula
+                    if (matriculaOptional.isEmpty()) {
+                        matriculaOptional = matriculaRepository
+                                .findTopByEstudiante_IdEstudianteOrderByFechaMatriculaDesc(
+                                        estudiante.getIdEstudiante()
+                                );
+                    }
+                    
+                    AtomicReference<String> estadoMatriculaRef = new AtomicReference<>(null);
+                    matriculaOptional.ifPresent(matricula -> {
+                        idMatriculaActualRef.set(matricula.getIdMatricula());
+                        estadoMatriculaRef.set(matricula.getEstadoMatricula());
+                    });
 
                     return EstudianteListaApoderadoDTO.builder()
                             .idEstudiante(estudiante.getIdEstudiante())
                             .idMatriculaActual(idMatriculaActualRef.get())
+                            .estadoMatriculaActual(estadoMatriculaRef.get())
                             .codigoEstudiante(estudiante.getCodigoEstudiante())
                             .nombresCompletos(estudiante.getPersona().getNombres() + " " + estudiante.getPersona().getApellidos())
                             .dni(estudiante.getPersona().getDni())
