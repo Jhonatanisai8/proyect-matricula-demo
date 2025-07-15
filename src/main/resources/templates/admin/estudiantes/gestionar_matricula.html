@@ -99,11 +99,7 @@
                             <label for="estadoMatricula" class="form-label">Estado de Matrícula <span
                                     class="text-danger">*</span></label>
                             <select id="estadoMatricula" class="form-select" th:field="*{estadoMatricula}" required>
-                                <option value="">Seleccione...</option>
-                                <option th:each="estadoEntry : ${estadosMatricula}"
-                                        th:value="${estadoEntry.key}"
-                                        th:text="${estadoEntry.value}">Estado
-                                </option>
+                                <option value="PENDIENTE" selected>Pendiente</option>
                             </select>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('estadoMatricula')}"
                                  th:errors="*{estadoMatricula}"></div>
@@ -111,20 +107,18 @@
                         <div class="col-md-6">
                             <label for="modalidadPago" class="form-label">Modalidad de Pago <span
                                     class="text-danger">*</span></label>
-                            <select id="modalidadPago" class="form-select" th:field="*{modalidadPago}" required>
-                                <option value="">Seleccione...</option>
-                                <option th:each="modalidadEntry : ${modalidadesPago}"
-                                        th:value="${modalidadEntry.key}"
-                                        th:text="${modalidadEntry.value}">Modalidad
-                                </option>
+                            <select id="modalidadPago" class="form-select" th:field="*{modalidadPago}" required disabled style="background-color: #e9ecef;">
+                                <option value="ANUAL" selected>Anual</option>
                             </select>
+                            <div class="form-text">Modalidad fija establecida en Anual</div>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('modalidadPago')}"
                                  th:errors="*{modalidadPago}"></div>
                         </div>
                         <div class="col-md-6">
                             <label for="montoMatricula" class="form-label">Monto Matricula</label>
-                            <input type="number" step="0.01" class="form-control" id="montoMatricula"
-                                   th:field="*{montoMatricula}"/>
+                            <input type="text" class="form-control" id="montoMatricula" name="montoMatricula"
+                                   value="150" readonly style="background-color: #e9ecef;"/>
+                            <div class="form-text">Monto fijo establecido en 150.00</div>
                             <div class="invalid-feedback" th:if="${#fields.hasErrors('montoMatricula')}"
                                  th:errors="*{montoMatricula}"></div>
                         </div>

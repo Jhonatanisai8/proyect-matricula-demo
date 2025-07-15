@@ -860,6 +860,33 @@
             background-color: var(--highlight-color);
             color: #ffffff;
         }
+
+        /* Estilos para campos readonly y disabled en modo oscuro */
+        body.dark-mode .form-control[readonly] {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: #555 !important;
+        }
+
+        body.dark-mode .form-select[disabled] {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: #555 !important;
+        }
+
+        body.dark-mode .form-control[readonly]:focus {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: var(--highlight-color) !important;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25) !important;
+        }
+
+        body.dark-mode .form-select[disabled]:focus {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: var(--highlight-color) !important;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25) !important;
+        }
     </style>
 
     <th:block layout:fragment="styles"></th:block>
