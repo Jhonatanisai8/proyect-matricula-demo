@@ -14,87 +14,395 @@
               integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KenTlPMBOX/I7PmO7NveS/JwSgD7gefdgRz0B+oNcGTyNP8Qy0g=="
               crossorigin="anonymous" referrerpolicy="no-referrer"/>
         <style>
-
-            .dashboard-card {
-                background-color: #ffffff;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-                border: 1px solid #e3e6f0;
+            /* Estilos generales del dashboard */
+            .dashboard-container {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 2rem 0;
             }
 
-            .dashboard-card:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+            .welcome-section {
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 20px;
+                padding: 2rem;
+                margin-bottom: 2rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
             }
 
-            .dashboard-card .card-body {
-                padding: 2.5rem 2rem;
+            .welcome-title {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 700;
+                font-size: 2.5rem;
+            }
+
+            .welcome-subtitle {
+                color: #6c757d;
+                font-size: 1.2rem;
+                margin-top: 0.5rem;
+            }
+
+            /* Cards principales */
+            .main-card {
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 20px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                border: none;
+                overflow: hidden;
+                backdrop-filter: blur(10px);
+            }
+
+            .main-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            }
+
+            .info-card {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                color: white;
+                border-radius: 20px;
+                padding: 2rem;
+                height: 100%;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .info-card::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                animation: float 6s ease-in-out infinite;
+            }
+
+            .stats-card {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 20px;
+                padding: 2rem;
+                height: 100%;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .stats-card::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                animation: float 6s ease-in-out infinite reverse;
+            }
+
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(180deg); }
+            }
+
+            .card-icon {
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+                opacity: 0.9;
+                position: relative;
+                z-index: 2;
+            }
+
+            .card-title {
+                font-size: 1.3rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+                position: relative;
+                z-index: 2;
+            }
+
+            .card-text {
+                font-size: 3.5rem;
+                font-weight: 700;
+                margin: 0;
+                position: relative;
+                z-index: 2;
+            }
+
+            /* Lista de información */
+            .info-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                position: relative;
+                z-index: 2;
+            }
+
+            .info-list li {
+                padding: 0.75rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .info-list li:last-child {
+                border-bottom: none;
+            }
+
+            .info-label {
+                font-weight: 600;
+                opacity: 0.9;
+            }
+
+            .info-value {
+                font-weight: 500;
+                opacity: 0.8;
+            }
+
+            /* Botones */
+            .btn-modern {
+                border-radius: 50px;
+                padding: 0.75rem 2rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+                border: none;
+                position: relative;
+                overflow: hidden;
+                z-index: 2;
+            }
+
+            .btn-modern::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .btn-modern:hover::before {
+                left: 100%;
+            }
+
+            .btn-light-modern {
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+            }
+
+            .btn-light-modern:hover {
+                background: rgba(255, 255, 255, 0.3);
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            /* Sección de accesos rápidos */
+            .quick-access-section {
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 20px;
+                padding: 2rem;
+                margin-top: 2rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
+            }
+
+            .section-title {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: 700;
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+                text-align: center;
+            }
+
+            .quick-access-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+
+            .quick-access-card {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                border-radius: 15px;
+                padding: 1.5rem;
+                text-align: center;
+                color: white;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                text-align: center;
-                position: relative;
+                min-height: 150px;
             }
 
-            .dashboard-card .card-title {
-                font-size: 1.1rem;
-                color: #5a5c69;
-                margin-bottom: 0.75rem;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
+            .quick-access-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
             }
 
-            .dashboard-card .card-text {
-                font-size: 3rem;
-                font-weight: 700;
-                margin: 0;
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-
-            .dashboard-card .card-icon {
-                font-size: 4rem;
-                margin-bottom: 1.5rem;
-                opacity: 0.9;
-            }
-
-
-            .card-total {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            .quick-access-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                text-decoration: none;
                 color: white;
             }
 
-            .card-total .card-title,
-            .card-total .card-text,
-            .card-total .card-icon {
-                color: white;
+            .quick-access-card:hover::before {
+                transform: translateX(100%);
             }
 
-            .card-info-apoderado {
+            .quick-access-card.success {
+                background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            }
+
+            .quick-access-card.info {
                 background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-                color: white;
             }
 
-            .card-info-apoderado .card-title,
-            .card-info-apoderado .card-text,
-            .card-info-apoderado .card-icon {
-                color: white;
+            .quick-access-card.warning {
+                background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
             }
 
+            .quick-access-card.danger {
+                background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            }
 
+            .quick-access-card.secondary {
+                background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+                color: #333;
+            }
+
+            .quick-access-card.disabled {
+                background: linear-gradient(135deg, #d3d3d3 0%, #a9a9a9 100%);
+                color: #666;
+                cursor: not-allowed;
+            }
+
+            .quick-access-card.disabled:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+            .quick-access-icon {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                position: relative;
+                z-index: 2;
+            }
+
+            .quick-access-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+                position: relative;
+                z-index: 2;
+            }
+
+            .quick-access-desc {
+                font-size: 0.9rem;
+                opacity: 0.9;
+                position: relative;
+                z-index: 2;
+            }
+
+            /* Alertas mejoradas */
+            .alert-modern {
+                border-radius: 15px;
+                border: none;
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
+            }
+
+            /* Responsive */
             @media (max-width: 768px) {
-                .dashboard-card .card-body {
-                    padding: 2rem 1.5rem;
+                .dashboard-container {
+                    padding: 1rem 0;
                 }
 
-                .dashboard-card .card-text {
+                .welcome-title {
+                    font-size: 2rem;
+                }
+
+                .card-text {
                     font-size: 2.5rem;
                 }
 
-                .dashboard-card .card-icon {
+                .card-icon {
                     font-size: 3rem;
+                }
+
+                .quick-access-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Animaciones de entrada */
+            .fade-in {
+                animation: fadeIn 0.8s ease-in-out;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .slide-in-left {
+                animation: slideInLeft 0.8s ease-in-out;
+            }
+
+            @keyframes slideInLeft {
+                from {
+                    opacity: 0;
+                    transform: translateX(-50px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            .slide-in-right {
+                animation: slideInRight 0.8s ease-in-out;
+            }
+
+            @keyframes slideInRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(50px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
                 }
             }
         </style>
@@ -102,109 +410,173 @@
 </head>
 <body>
 
-<section layout:fragment="content" class="flex-grow-1 container-fluid">
-    <div class="container mt-4">
-        <header class="mb-4 text-center">
-            <h1 class="h3 text-primary"><i class="fas fa-user-shield me-2"></i> Dashboard del Apoderado</h1>
-            <p class="lead text-muted">Bienvenido, <span
-                    th:text="${dashboardData.nombresCompletos}">[Nombre Apoderado]</span></p>
-        </header>
+<section layout:fragment="content" class="dashboard-container">
+    <div class="container">
+        <!-- Sección de bienvenida -->
+        <div class="welcome-section fade-in">
+            <div class="text-center">
+                <h1 class="welcome-title">
+                    <i class="fas fa-user-shield me-3"></i>Dashboard del Apoderado
+                </h1>
+                <p class="welcome-subtitle">
+                    Bienvenido, <strong th:text="${dashboardData.nombresCompletos}">[Nombre Apoderado]</strong>
+                </p>
+                <p class="text-muted mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    <span th:text="${#temporals.format(#temporals.createNow(), 'EEEE, dd MMMM yyyy')}">Fecha actual</span>
+                </p>
+            </div>
+        </div>
 
-        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <!-- Alertas -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-modern alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-triangle me-2"></i>
             <span th:text="${errorMessage}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
-        <div class="row g-4">
+        <!-- Cards principales -->
+        <div class="row g-4 mb-4">
             <div class="col-lg-6 col-md-12">
-                <div class="card dashboard-card card-info-apoderado h-100">
-                    <div class="card-body">
+                <div class="main-card slide-in-left">
+                    <div class="info-card">
                         <i class="fas fa-id-card card-icon"></i>
-                        <h5 class="card-title">Mi Información</h5>
-                        <ul class="list-unstyled text-start w-100 px-3">
-                            <li class="mb-2"><strong>Nombre:</strong> <span
-                                    th:text="${dashboardData.nombresCompletos}"></span></li>
-                            <li class="mb-2"><strong>DNI:</strong> <span th:text="${dashboardData.dni}"></span></li>
-                            <li class="mb-2"><strong>Email:</strong> <span
-                                    th:text="${dashboardData.emailPersonal}"></span></li>
-                            <li class="mb-2"><strong>Teléfono:</strong> <span
-                                    th:text="${dashboardData.telefono}"></span></li>
-                            <li class="mb-2"><strong>Ocupación:</strong> <span
-                                    th:text="${dashboardData.ocupacion}"></span></li>
-                            <li class="mb-2"><strong>Nivel Educativo:</strong> <span
-                                    th:text="${dashboardData.nivelEducativo}"></span></li>
+                        <h5 class="card-title">Mi Información Personal</h5>
+                        <ul class="info-list">
+                            <li>
+                                <span class="info-label">Nombre:</span>
+                                <span class="info-value" th:text="${dashboardData.nombresCompletos}">-</span>
+                            </li>
+                            <li>
+                                <span class="info-label">DNI:</span>
+                                <span class="info-value" th:text="${dashboardData.dni}">-</span>
+                            </li>
+                            <li>
+                                <span class="info-label">Email:</span>
+                                <span class="info-value" th:text="${dashboardData.emailPersonal}">-</span>
+                            </li>
+                            <li>
+                                <span class="info-label">Teléfono:</span>
+                                <span class="info-value" th:text="${dashboardData.telefono}">-</span>
+                            </li>
+                            <li>
+                                <span class="info-label">Ocupación:</span>
+                                <span class="info-value" th:text="${dashboardData.ocupacion}">-</span>
+                            </li>
+                            <li>
+                                <span class="info-label">Nivel Educativo:</span>
+                                <span class="info-value" th:text="${dashboardData.nivelEducativo}">-</span>
+                            </li>
                         </ul>
-                        <a th:href="@{/apoderado/perfil}" class="btn btn-light btn-sm mt-3">
-                            <i class="fas fa-edit me-1"></i> Editar Perfil
+                        <a th:href="@{/apoderado/perfil}" class="btn btn-modern btn-light-modern mt-3">
+                            <i class="fas fa-edit me-2"></i> Editar Perfil
                         </a>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-6 col-md-12">
-                <div class="card dashboard-card card-total h-100">
-                    <div class="card-body">
+                <div class="main-card slide-in-right">
+                    <div class="stats-card">
                         <i class="fas fa-child card-icon"></i>
-                        <h5 class="card-title">Total de Hijos Vinculados</h5>
+                        <h5 class="card-title">Hijos Vinculados</h5>
                         <p class="card-text" th:text="${dashboardData.totalHijosVinculados}">0</p>
-                        <a th:href="@{/apoderado/mis_hijos}" class="btn btn-light btn-sm mt-3">
-                            <i class="fas fa-users me-1"></i> Ver Mis Hijos
+                        <p class="mb-3">estudiantes registrados</p>
+                        <a th:href="@{/apoderado/mis_hijos}" class="btn btn-modern btn-light-modern">
+                            <i class="fas fa-users me-2"></i> Ver Mis Hijos
                         </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card shadow-sm mt-5">
-            <div class="card-header bg-primary-custom py-3">
-                <h5 class="mb-0"><i class="fas fa-tachometer-alt me-2"></i> Accesos Rápidos</h5>
-            </div>
-            <div class="card-body">
-                <div class="row row-cols-1 row-cols-md-3 g-3">
-                    <div class="col">
-                        <a th:href="@{/apoderado/mis_hijos}" class="btn btn-outline-primary quick-access-btn">
-                            <i class="fas fa-users"></i>
-                            <span>Mis Hijos</span>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a th:href="@{/apoderado/pagos}" class="btn btn-outline-success quick-access-btn">
-                            <i class="fas fa-dollar-sign"></i>
-                            <span>Pagos</span>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a th:href="@{/apoderado/perfil}" class="btn btn-outline-info quick-access-btn">
-                            <i class="fas fa-cogs"></i>
-                            <span>Mi Perfil</span>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="#" class="btn btn-outline-warning quick-access-btn disabled">
-                            <i class="fas fa-clipboard-list"></i>
-                            <span>Notas de Hijo</span>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="#" class="btn btn-outline-danger quick-access-btn disabled">
-                            <i class="fas fa-user-check"></i>
-                            <span>Asistencia de Hijo</span>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a th:href="@{/apoderado/registrar-hijo}" class="btn btn-outline-secondary quick-access-btn">
-                            <i class="fas fa-user-plus"></i>
-                            <span>Registrar Nuevo Hijo</span>
-                        </a>
-                    </div>
-                </div>
+        <!-- Sección de accesos rápidos -->
+        <div class="quick-access-section fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-tachometer-alt me-3"></i>Accesos Rápidos
+            </h2>
+            <div class="quick-access-grid">
+                <a th:href="@{/apoderado/mis_hijos}" class="quick-access-card">
+                    <i class="fas fa-users quick-access-icon"></i>
+                    <div class="quick-access-title">Mis Hijos</div>
+                    <div class="quick-access-desc">Gestionar información de mis hijos</div>
+                </a>
+
+                <a th:href="@{/apoderado/pagos}" class="quick-access-card success">
+                    <i class="fas fa-dollar-sign quick-access-icon"></i>
+                    <div class="quick-access-title">Pagos</div>
+                    <div class="quick-access-desc">Consultar y realizar pagos</div>
+                </a>
+
+                <a th:href="@{/apoderado/perfil}" class="quick-access-card info">
+                    <i class="fas fa-cogs quick-access-icon"></i>
+                    <div class="quick-access-title">Mi Perfil</div>
+                    <div class="quick-access-desc">Actualizar información personal</div>
+                </a>
+
+                <a href="#" class="quick-access-card warning disabled">
+                    <i class="fas fa-clipboard-list quick-access-icon"></i>
+                    <div class="quick-access-title">Notas de Hijo</div>
+                    <div class="quick-access-desc">Próximamente disponible</div>
+                </a>
+
+                <a href="#" class="quick-access-card danger disabled">
+                    <i class="fas fa-user-check quick-access-icon"></i>
+                    <div class="quick-access-title">Asistencia de Hijo</div>
+                    <div class="quick-access-desc">Próximamente disponible</div>
+                </a>
+
+                <a th:href="@{/apoderado/registrar-hijo}" class="quick-access-card secondary">
+                    <i class="fas fa-user-plus quick-access-icon"></i>
+                    <div class="quick-access-title">Registrar Nuevo Hijo</div>
+                    <div class="quick-access-desc">Agregar nuevo estudiante</div>
+                </a>
             </div>
         </div>
     </div>
 </section>
 
 <th:block layout:fragment="scripts">
+    <script>
+        // Animación de contadores
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('.card-text');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent);
+                if (!isNaN(target)) {
+                    let count = 0;
+                    const increment = Math.ceil(target / 50);
+                    
+                    const updateCounter = () => {
+                        if (count < target) {
+                            count += increment;
+                            if (count > target) count = target;
+                            counter.textContent = count;
+                            setTimeout(updateCounter, 50);
+                        }
+                    };
+                    
+                    setTimeout(() => {
+                        counter.textContent = '0';
+                        updateCounter();
+                    }, 1000);
+                }
+            });
+        });
+
+        // Efecto hover en las cards
+        document.querySelectorAll('.quick-access-card:not(.disabled)').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
 </th:block>
+
 </body>
 </html>
