@@ -206,23 +206,13 @@
 
                                     class="text-danger">*</span></label>
 
-                            <select id="estadoMatricula" class="form-select" th:field="*{estadoMatricula}" required>
+                            <input type="text" class="form-control" id="estadoMatricula" value="PENDIENTE" readonly
 
-                                <option value="">Seleccione...</option>
+                                   style="background-color: #f8f9fa; color: #6c757d; cursor: not-allowed;"/>
 
-                                <option th:each="estadoEntry : ${estadosMatricula}"
+                            <input type="hidden" th:field="*{estadoMatricula}" value="PENDIENTE"/>
 
-                                        th:value="${estadoEntry.key}"
-
-                                        th:text="${estadoEntry.value}">Estado
-
-                                </option>
-
-                            </select>
-
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('estadoMatricula')}"
-
-                                 th:errors="*{estadoMatricula}"></div>
+                            <div class="form-text text-muted">Estado fijo: Pendiente</div>
 
                         </div>
 
@@ -232,37 +222,27 @@
 
                                     class="text-danger">*</span></label>
 
-                            <select id="modalidadPago" class="form-select" th:field="*{modalidadPago}" required>
+                            <input type="text" class="form-control" id="modalidadPago" value="ANUAL" readonly
 
-                                <option value="">Seleccione...</option>
+                                   style="background-color: #f8f9fa; color: #6c757d; cursor: not-allowed;"/>
 
-                                <option th:each="modalidadEntry : ${modalidadesPago}"
+                            <input type="hidden" th:field="*{modalidadPago}" value="ANUAL"/>
 
-                                        th:value="${modalidadEntry.key}"
-
-                                        th:text="${modalidadEntry.value}">Modalidad
-
-                                </option>
-
-                            </select>
-
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('modalidadPago')}"
-
-                                 th:errors="*{modalidadPago}"></div>
+                            <div class="form-text text-muted">Modalidad fija: Anual</div>
 
                         </div>
 
                         <div class="col-md-6">
 
-                            <label for="montoMatricula" class="form-label">Monto Matricula</label>
+                            <label for="montoMatricula" class="form-label">Monto Matrícula</label>
 
-                            <input type="number" step="0.01" class="form-control" id="montoMatricula"
+                            <input type="text" class="form-control" id="montoMatricula" value="150" readonly
 
-                                   th:field="*{montoMatricula}"/>
+                                   style="background-color: #f8f9fa; color: #6c757d; cursor: not-allowed;"/>
 
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('montoMatricula')}"
+                            <input type="hidden" th:field="*{montoMatricula}" value="150"/>
 
-                                 th:errors="*{montoMatricula}"></div>
+                            <div class="form-text text-muted">Monto fijo: S/ 150.00</div>
 
                         </div>
 
@@ -330,6 +310,36 @@
     </div>
 
 </section>
+
+<style>
+    /* Estilos para campos readonly en modo oscuro */
+    .dark-mode input[readonly] {
+        background-color: #2d3748 !important;
+        color: #a0aec0 !important;
+        border-color: #4a5568 !important;
+    }
+    
+    .dark-mode input[readonly]:focus {
+        background-color: #2d3748 !important;
+        color: #a0aec0 !important;
+        border-color: #4a5568 !important;
+        box-shadow: none !important;
+    }
+    
+    /* Estilos para campos readonly en modo claro */
+    input[readonly] {
+        background-color: #f8f9fa !important;
+        color: #6c757d !important;
+        cursor: not-allowed !important;
+    }
+    
+    input[readonly]:focus {
+        background-color: #f8f9fa !important;
+        color: #6c757d !important;
+        border-color: #dee2e6 !important;
+        box-shadow: none !important;
+    }
+</style>
 
 
 <th:block layout:fragment="scripts">
