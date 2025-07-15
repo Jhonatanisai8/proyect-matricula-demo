@@ -218,6 +218,591 @@
                 flex-grow: 0;
             }
         }
+
+        /* Estilos para modo oscuro */
+        body.dark-mode {
+            --main-bg-color: #1a1a1a;
+            --content-bg-color: #2d2d2d;
+            --dark-bg: #1e1e1e;
+            --darker-bg: #151515;
+            --text-light: #ffffff;
+            --border-color-light: #404040;
+        }
+
+        body.dark-mode main {
+            background-color: var(--content-bg-color);
+            color: #ffffff;
+        }
+
+        body.dark-mode main header h1 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .card {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .table {
+            color: #ffffff;
+        }
+
+        body.dark-mode .table thead th {
+            background-color: #1e1e1e;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .table tbody td {
+            border-color: #404040;
+        }
+
+        body.dark-mode .form-control {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .form-control:focus {
+            background-color: #2d2d2d;
+            border-color: var(--highlight-color);
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25);
+        }
+
+        body.dark-mode .btn-outline-secondary {
+            color: #ffffff;
+            border-color: #404040;
+        }
+
+        body.dark-mode .btn-outline-secondary:hover {
+            background-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .modal-header {
+            border-bottom-color: #404040;
+        }
+
+        body.dark-mode .modal-footer {
+            border-top-color: #404040;
+        }
+
+        body.dark-mode .dropdown-menu {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+
+        body.dark-mode .dropdown-item {
+            color: #ffffff;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background-color: #404040;
+        }
+
+        body.dark-mode .alert {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+
+        /* Estilos adicionales para elementos específicos del apoderado */
+        body.dark-mode .text-dark-emphasis {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .lead {
+            color: #d0d0d0 !important;
+        }
+
+        body.dark-mode .shadow-sm {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .shadow {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.dark-mode .border-bottom {
+            border-bottom-color: #404040 !important;
+        }
+
+        body.dark-mode .border-top {
+            border-top-color: #404040 !important;
+        }
+
+        body.dark-mode .border {
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .border-0 {
+            border-color: transparent !important;
+        }
+
+        /* Estilos para cards con gradientes en modo oscuro */
+        body.dark-mode .info-card {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+        }
+
+        body.dark-mode .stats-card {
+            background: linear-gradient(135deg, #805ad5 0%, #553c9a 100%) !important;
+        }
+
+        /* Estilos para tablas en modo oscuro */
+        body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        body.dark-mode .table-hover > tbody > tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .table-primary {
+            background-color: #553c9a !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .table-primary th,
+        body.dark-mode .table-primary td {
+            border-color: #4a5568 !important;
+        }
+
+        /* Estilos para badges y estados */
+        body.dark-mode .badge {
+            color: #ffffff;
+        }
+
+        body.dark-mode .badge.bg-success {
+            background-color: #38a169 !important;
+        }
+
+        body.dark-mode .badge.bg-danger {
+            background-color: #e53e3e !important;
+        }
+
+        body.dark-mode .badge.bg-warning {
+            background-color: #d69e2e !important;
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .badge.bg-info {
+            background-color: #3182ce !important;
+        }
+
+        body.dark-mode .badge.bg-secondary {
+            background-color: #4a5568 !important;
+        }
+
+        /* Estilos para botones en modo oscuro */
+        body.dark-mode .btn-outline-primary {
+            color: #8e44ad;
+            border-color: #8e44ad;
+        }
+
+        body.dark-mode .btn-outline-primary:hover {
+            background-color: #8e44ad;
+            color: #ffffff;
+        }
+
+        body.dark-mode .btn-outline-success {
+            color: #68d391;
+            border-color: #68d391;
+        }
+
+        body.dark-mode .btn-outline-success:hover {
+            background-color: #68d391;
+            color: #1a202c;
+        }
+
+        body.dark-mode .btn-outline-danger {
+            color: #fc8181;
+            border-color: #fc8181;
+        }
+
+        body.dark-mode .btn-outline-danger:hover {
+            background-color: #fc8181;
+            color: #1a202c;
+        }
+
+        body.dark-mode .btn-outline-warning {
+            color: #f6e05e;
+            border-color: #f6e05e;
+        }
+
+        body.dark-mode .btn-outline-warning:hover {
+            background-color: #f6e05e;
+            color: #1a202c;
+        }
+
+        body.dark-mode .btn-outline-info {
+            color: #63b3ed;
+            border-color: #63b3ed;
+        }
+
+        body.dark-mode .btn-outline-info:hover {
+            background-color: #63b3ed;
+            color: #1a202c;
+        }
+
+        /* Estilos para inputs y selects en modo oscuro */
+        body.dark-mode .input-group-text {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .form-select {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .form-select:focus {
+            background-color: #2d2d2d;
+            border-color: var(--highlight-color);
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25);
+        }
+
+        /* Estilos para paginación en modo oscuro */
+        body.dark-mode .pagination .page-link {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .pagination .page-link:hover {
+            background-color: #404040;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .pagination .page-item.active .page-link {
+            background-color: var(--highlight-color);
+            border-color: var(--highlight-color);
+            color: #ffffff;
+        }
+
+        body.dark-mode .pagination .page-item.disabled .page-link {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #6c757d;
+        }
+
+        /* Estilos para tooltips en modo oscuro */
+        body.dark-mode .tooltip .tooltip-inner {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .tooltip .tooltip-arrow::before {
+            border-top-color: #2d2d2d;
+        }
+
+        /* Estilos para elementos de navegación */
+        body.dark-mode .breadcrumb {
+            background-color: transparent;
+        }
+
+        body.dark-mode .breadcrumb-item + .breadcrumb-item::before {
+            color: #6c757d;
+        }
+
+        body.dark-mode .breadcrumb-item.active {
+            color: #b0b0b0;
+        }
+
+        /* Estilos para iconos en modo oscuro */
+        body.dark-mode .text-primary {
+            color: #8e44ad !important;
+        }
+
+        body.dark-mode .text-success {
+            color: #68d391 !important;
+        }
+
+        body.dark-mode .text-danger {
+            color: #fc8181 !important;
+        }
+
+        body.dark-mode .text-warning {
+            color: #f6e05e !important;
+        }
+
+        body.dark-mode .text-info {
+            color: #63b3ed !important;
+        }
+
+        body.dark-mode .text-secondary {
+            color: #a0aec0 !important;
+        }
+
+        /* Estilos para elementos de búsqueda */
+        body.dark-mode .search-container {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+        }
+
+        /* Estilos para elementos de estado */
+        body.dark-mode .status-badge {
+            color: #ffffff;
+        }
+
+        /* Estilos para enlaces de ordenamiento */
+        body.dark-mode .sort-link {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .sort-link:hover {
+            color: var(--highlight-color) !important;
+        }
+
+        /* Estilos para elementos de acción */
+        body.dark-mode .action-buttons .btn {
+            border-color: #404040;
+        }
+
+        /* Estilos para elementos de información */
+        body.dark-mode .pagination-info {
+            color: #b0b0b0 !important;
+        }
+
+        /* Estilos para formularios en modo oscuro */
+        body.dark-mode .form-label {
+            color: #ffffff !important;
+        }
+
+        body.dark-mode .form-text {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .invalid-feedback {
+            color: #fc8181 !important;
+        }
+
+        body.dark-mode .valid-feedback {
+            color: #68d391 !important;
+        }
+
+        body.dark-mode .form-check-input {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+
+        body.dark-mode .form-check-input:checked {
+            background-color: var(--highlight-color);
+            border-color: var(--highlight-color);
+        }
+
+        body.dark-mode .form-check-label {
+            color: #ffffff;
+        }
+
+        /* Estilos para elementos de imagen en modo oscuro */
+        body.dark-mode .img-fluid {
+            border-color: #404040 !important;
+        }
+
+        body.dark-mode .rounded-circle {
+            border-color: #404040 !important;
+        }
+
+        /* Estilos para elementos de texto en modo oscuro */
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
+        }
+
+        body.dark-mode .small {
+            color: #b0b0b0 !important;
+        }
+
+        /* Estilos para elementos de navegación en modo oscuro */
+        body.dark-mode .nav-tabs {
+            border-bottom-color: #404040;
+        }
+
+        body.dark-mode .nav-tabs .nav-link {
+            color: #b0b0b0;
+            border-color: transparent;
+        }
+
+        body.dark-mode .nav-tabs .nav-link:hover {
+            color: #ffffff;
+            border-color: #404040;
+        }
+
+        body.dark-mode .nav-tabs .nav-link.active {
+            color: #ffffff;
+            background-color: #2d2d2d;
+            border-color: #404040 #404040 #2d2d2d;
+        }
+
+        /* Estilos para elementos de progreso en modo oscuro */
+        body.dark-mode .progress {
+            background-color: #404040;
+        }
+
+        body.dark-mode .progress-bar {
+            background-color: var(--highlight-color);
+        }
+
+        /* Estilos para elementos de lista en modo oscuro */
+        body.dark-mode .list-group {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+
+        body.dark-mode .list-group-item {
+            background-color: #2d2d2d;
+            border-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .list-group-item:hover {
+            background-color: #404040;
+        }
+
+        body.dark-mode .list-group-item.active {
+            background-color: var(--highlight-color);
+            border-color: var(--highlight-color);
+            color: #ffffff;
+        }
+
+        /* Estilos para elementos de acordeón en modo oscuro */
+        body.dark-mode .accordion {
+            background-color: #2d2d2d;
+        }
+
+        body.dark-mode .accordion-item {
+            background-color: #2d2d2d;
+            border-color: #404040;
+        }
+
+        body.dark-mode .accordion-button {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border-color: #404040;
+        }
+
+        body.dark-mode .accordion-button:not(.collapsed) {
+            background-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .accordion-button:hover {
+            background-color: #404040;
+            color: #ffffff;
+        }
+
+        body.dark-mode .accordion-button:focus {
+            box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+        }
+
+        body.dark-mode .accordion-body {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+
+        /* Estilos para elementos de carrusel en modo oscuro */
+        body.dark-mode .carousel {
+            background-color: #2d2d2d;
+        }
+
+        body.dark-mode .carousel-item {
+            background-color: #2d2d2d;
+        }
+
+        /* Estilos para elementos de spinner en modo oscuro */
+        body.dark-mode .spinner-border {
+            color: var(--highlight-color);
+        }
+
+        body.dark-mode .spinner-grow {
+            color: var(--highlight-color);
+        }
+
+        /* Estilos para elementos de placeholder en modo oscuro */
+        body.dark-mode ::placeholder {
+            color: #6c757d !important;
+        }
+
+        body.dark-mode ::-webkit-input-placeholder {
+            color: #6c757d !important;
+        }
+
+        body.dark-mode ::-moz-placeholder {
+            color: #6c757d !important;
+        }
+
+        body.dark-mode :-ms-input-placeholder {
+            color: #6c757d !important;
+        }
+
+        /* Estilos para elementos de scrollbar en modo oscuro */
+        body.dark-mode ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb {
+            background: #404040;
+            border-radius: 4px;
+        }
+
+        body.dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Estilos para elementos de selección en modo oscuro */
+        body.dark-mode ::selection {
+            background-color: var(--highlight-color);
+            color: #ffffff;
+        }
+
+        body.dark-mode ::-moz-selection {
+            background-color: var(--highlight-color);
+            color: #ffffff;
+        }
+
+        /* Estilos para campos readonly y disabled en modo oscuro */
+        body.dark-mode .form-control[readonly] {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: #555 !important;
+        }
+
+        body.dark-mode .form-select[disabled] {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: #555 !important;
+        }
+
+        body.dark-mode .form-control[readonly]:focus {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: var(--highlight-color) !important;
+            box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25) !important;
+        }
+
+        body.dark-mode .form-select[disabled]:focus {
+            background-color: #404040 !important;
+            color: #ffffff !important;
+            border-color: var(--highlight-color) !important;
+            box-shadow: 0 0 0 0.2rem rgba(142, 68, 173, 0.25) !important;
+        }
     </style>
 
     <th:block layout:fragment="styles"></th:block>
@@ -242,6 +827,11 @@
                         <i class="bi bi-person-circle me-1"></i>
                         Bienvenido, <strong sec:authentication="name"></strong>!
                     </span>
+                </li>
+                <li class="nav-item me-3">
+                    <button id="darkModeToggle" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-moon-fill me-1"></i><span>Modo Oscuro</span>
+                    </button>
                 </li>
                 <li class="nav-item">
                     <form th:action="@{/logout}" method="post">
@@ -329,6 +919,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
+        // Funcionalidad del sidebar
         const sidebarNav = document.getElementById('sidebarNav');
         if (sidebarNav) {
             const currentPath = window.location.pathname;
@@ -342,6 +933,49 @@
                     link.classList.add('active');
                 }
             });
+        }
+
+        // Funcionalidad del modo oscuro
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        
+        // Verificar si hay una preferencia guardada
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        
+        // Aplicar el modo oscuro si está guardado
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            updateDarkModeButton(true);
+        }
+        
+        // Event listener para el botón de modo oscuro
+        darkModeToggle.addEventListener('click', function() {
+            const isCurrentlyDark = body.classList.contains('dark-mode');
+            
+            if (isCurrentlyDark) {
+                // Cambiar a modo claro
+                body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'false');
+                updateDarkModeButton(false);
+            } else {
+                // Cambiar a modo oscuro
+                body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'true');
+                updateDarkModeButton(true);
+            }
+        });
+        
+        function updateDarkModeButton(isDark) {
+            const icon = darkModeToggle.querySelector('i');
+            const text = darkModeToggle.querySelector('span');
+            
+            if (isDark) {
+                icon.className = 'bi bi-sun-fill me-1';
+                text.textContent = 'Modo Claro';
+            } else {
+                icon.className = 'bi bi-moon-fill me-1';
+                text.textContent = 'Modo Oscuro';
+            }
         }
     });
 </script>

@@ -337,28 +337,125 @@
                 backdrop-filter: blur(10px);
             }
 
-            /* Responsive */
-            @media (max-width: 768px) {
-                .dashboard-container {
-                    padding: 1rem 0;
-                }
-
-                .welcome-title {
-                    font-size: 2rem;
-                }
-
-                .card-text {
-                    font-size: 2.5rem;
-                }
-
-                .card-icon {
-                    font-size: 3rem;
-                }
-
-                .quick-access-grid {
-                    grid-template-columns: 1fr;
-                }
+                    /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem 0;
             }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .card-text {
+                font-size: 2.5rem;
+            }
+
+            .card-icon {
+                font-size: 3rem;
+            }
+
+            .quick-access-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Estilos para modo oscuro en el dashboard del apoderado */
+        body.dark-mode .dashboard-container {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .welcome-section {
+            background: rgba(45, 45, 45, 0.95);
+            color: #ffffff;
+        }
+
+        body.dark-mode .welcome-title {
+            background: linear-gradient(135deg, #8e44ad 0%, #6f42c1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.dark-mode .welcome-subtitle {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .main-card {
+            background: rgba(45, 45, 45, 0.95);
+        }
+
+        body.dark-mode .info-card {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+        }
+
+        body.dark-mode .stats-card {
+            background: linear-gradient(135deg, #805ad5 0%, #553c9a 100%) !important;
+        }
+
+        body.dark-mode .quick-access-section {
+            background: rgba(45, 45, 45, 0.95);
+            color: #ffffff;
+        }
+
+        body.dark-mode .section-title {
+            background: linear-gradient(135deg, #8e44ad 0%, #6f42c1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.dark-mode .quick-access-card.success {
+            background: linear-gradient(135deg, #38a169 0%, #276749 100%);
+        }
+
+        body.dark-mode .quick-access-card.info {
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+        }
+
+        body.dark-mode .quick-access-card.warning {
+            background: linear-gradient(135deg, #d69e2e 0%, #b7791f 100%);
+        }
+
+        body.dark-mode .quick-access-card.danger {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+        }
+
+        body.dark-mode .quick-access-card.secondary {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: #ffffff;
+        }
+
+        body.dark-mode .quick-access-card.disabled {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: #a0aec0;
+        }
+
+        body.dark-mode .info-list li {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .info-label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark-mode .info-value {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        body.dark-mode .btn-light-modern {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        body.dark-mode .btn-light-modern:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        body.dark-mode .alert-modern {
+            background: rgba(45, 45, 45, 0.95);
+            border-color: #404040;
+        }
 
             /* Animaciones de entrada */
             .fade-in {
