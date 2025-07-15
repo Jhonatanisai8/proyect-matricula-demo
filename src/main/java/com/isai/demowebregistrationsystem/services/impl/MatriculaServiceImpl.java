@@ -190,6 +190,22 @@ public class MatriculaServiceImpl
                 .map(this::convertToMatriculaDetalleDTO);
     }
 
+    @Override
+    @Transactional
+    public void cambiarEstadoMatricula(Integer idMatricula, String nuevoEstado) {
+        Matricula matricula = matriculaRepository.findById(idMatricula)
+                .orElseThrow(() -> new ResourceNotFoundException("Matrícula no encontrada con ID: " + idMatricula));
+        
+        // Validar que el nuevo estado sea válido
+        List<String> estadosValidos = List.of("ACTIVA", "PENDIENTE", "COMPLETADA", "RETIRADA", "INACTIVA");
+        if (!estadosValidos.contains(nuevoEstado)) {
+            throw new ValidationException("Estado de matrícula no válido: " + nuevoEstado);
+        }
+        
+        matricula.setEstadoMatricula(nuevoEstado);
+        matriculaRepository.save(matricula);
+    }
+
 
     private MatriculaDTO convertToMatriculaDTO(Matricula matricula) {
         String nombreEstudiante = matricula.getEstudiante() != null && matricula.getEstudiante().getPersona() != null ?

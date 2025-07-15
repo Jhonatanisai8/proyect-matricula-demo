@@ -30,4 +30,5 @@ public interface MatriculaService {
 
     Optional<MatriculaDetalleDTO> obtenerDetalleMatriculaPorId(Integer id);
 
+    void cambiarEstadoMatricula(Integer idMatricula, String nuevoEstado);
 }

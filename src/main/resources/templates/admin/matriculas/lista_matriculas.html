@@ -10,6 +10,45 @@
             margin-right: 5px;
             margin-left: 5px;
         }
+        
+        .badge {
+            font-size: 0.8em;
+            padding: 0.4em 0.6em;
+        }
+        
+        .dropdown-item {
+            cursor: pointer;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .btn-group .dropdown-toggle {
+            font-size: 0.8em;
+        }
+        
+        /* Estilos para modo oscuro */
+        .dark-mode .badge.bg-success {
+            background-color: #198754 !important;
+        }
+        
+        .dark-mode .badge.bg-warning {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+        }
+        
+        .dark-mode .badge.bg-info {
+            background-color: #0dcaf0 !important;
+        }
+        
+        .dark-mode .badge.bg-danger {
+            background-color: #dc3545 !important;
+        }
+        
+        .dark-mode .badge.bg-secondary {
+            background-color: #6c757d !important;
+        }
     </style>
 </head>
 
@@ -40,6 +79,16 @@
                 </div>
             </div>
             <div class="card-body">
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
@@ -51,6 +100,7 @@
                                 <th>Grado</th>
                                 <th>Período Académico</th>
                                 <th>Realizada por Apoderado</th>
+                                <th>Cambiar Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -58,11 +108,72 @@
                             <tr th:each="matricula : ${matriculasPage.content}">
                                 <td th:text="${matricula.numeroMatricula}"></td>
                                 <td th:text="${#temporals.format(matricula.fechaMatricula, 'dd-MM-yyyy')}"></td>
-                                <td th:text="${matricula.estadoMatricula}"></td>
+                                <td>
+                                    <span th:if="${matricula.estadoMatricula == 'ACTIVA'}" class="badge bg-success">Activa</span>
+                                    <span th:if="${matricula.estadoMatricula == 'PENDIENTE'}" class="badge bg-warning">Pendiente</span>
+                                    <span th:if="${matricula.estadoMatricula == 'COMPLETADA'}" class="badge bg-info">Completada</span>
+                                    <span th:if="${matricula.estadoMatricula == 'RETIRADA'}" class="badge bg-danger">Retirada</span>
+                                    <span th:if="${matricula.estadoMatricula == 'INACTIVA'}" class="badge bg-secondary">Inactiva</span>
+                                </td>
                                 <td th:text="${matricula.nombreEstudiante + ' ' + matricula.apellidoEstudiante}"></td>
                                 <td th:text="${matricula.nombreGrado}"></td>
                                 <td th:text="${matricula.nombrePeriodoAcademico}"></td>
                                 <td th:text="${matricula.nombreApoderadoRealiza}"></td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-success dropdown-toggle" 
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-exchange-alt"></i> Cambiar
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li th:if="${matricula.estadoMatricula != 'ACTIVA'}">
+                                                <form th:action="@{/admin/matricula/{id}/cambiar-estado(id=${matricula.id})}" 
+                                                      method="post" style="display: inline;">
+                                                    <input type="hidden" name="nuevoEstado" value="ACTIVA">
+                                                    <button type="submit" class="dropdown-item text-success">
+                                                        <i class="fas fa-check-circle"></i> Activar
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li th:if="${matricula.estadoMatricula != 'PENDIENTE'}">
+                                                <form th:action="@{/admin/matricula/{id}/cambiar-estado(id=${matricula.id})}" 
+                                                      method="post" style="display: inline;">
+                                                    <input type="hidden" name="nuevoEstado" value="PENDIENTE">
+                                                    <button type="submit" class="dropdown-item text-warning">
+                                                        <i class="fas fa-clock"></i> Marcar Pendiente
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li th:if="${matricula.estadoMatricula != 'COMPLETADA'}">
+                                                <form th:action="@{/admin/matricula/{id}/cambiar-estado(id=${matricula.id})}" 
+                                                      method="post" style="display: inline;">
+                                                    <input type="hidden" name="nuevoEstado" value="COMPLETADA">
+                                                    <button type="submit" class="dropdown-item text-info">
+                                                        <i class="fas fa-check-double"></i> Completar
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li th:if="${matricula.estadoMatricula != 'RETIRADA'}">
+                                                <form th:action="@{/admin/matricula/{id}/cambiar-estado(id=${matricula.id})}" 
+                                                      method="post" style="display: inline;">
+                                                    <input type="hidden" name="nuevoEstado" value="RETIRADA">
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="fas fa-times-circle"></i> Retirar
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li th:if="${matricula.estadoMatricula != 'INACTIVA'}">
+                                                <form th:action="@{/admin/matricula/{id}/cambiar-estado(id=${matricula.id})}" 
+                                                      method="post" style="display: inline;">
+                                                    <input type="hidden" name="nuevoEstado" value="INACTIVA">
+                                                    <button type="submit" class="dropdown-item text-secondary">
+                                                        <i class="fas fa-ban"></i> Inactivar
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
                                 <td>
                                     <a th:href="@{/admin/matricula/{id}(id=${matricula.id})}"
                                         class="btn btn-info btn-sm">Ver
@@ -70,7 +181,7 @@
                                 </td>
                             </tr>
                             <tr th:if="${matriculasPage.content.isEmpty()}">
-                                <td colspan="8" class="text-center">No se encontraron matrículas.</td>
+                                <td colspan="9" class="text-center">No se encontraron matrículas.</td>
                             </tr>
                         </tbody>
                     </table>
