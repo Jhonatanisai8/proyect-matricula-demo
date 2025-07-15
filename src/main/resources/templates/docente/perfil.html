@@ -7,6 +7,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:fragment="title">Mi Perfil - Docente</title>
+    <th:block layout:fragment="styles">
+        <style>
+            /* Estilos para modo oscuro en perfil del docente - Paleta mejorada */
+            .dark-mode .card {
+                background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+                color: #e2e8f0;
+                border: 1px solid #4a5568;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            }
+
+            .dark-mode .card-header.bg-primary {
+                background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%) !important;
+                border-bottom: 1px solid #4a5568;
+            }
+
+            .dark-mode .form-control,
+            .dark-mode .form-select {
+                background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+                color: #e2e8f0;
+                border: 1px solid #4a5568;
+                transition: all 0.3s ease;
+            }
+
+            .dark-mode .form-control:focus,
+            .dark-mode .form-select:focus {
+                background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+                color: #e2e8f0;
+                border-color: #63b3ed;
+                box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.2);
+                transform: translateY(-1px);
+            }
+
+            .dark-mode .form-label {
+                color: #e2e8f0;
+                font-weight: 500;
+            }
+
+            .dark-mode .form-text {
+                color: #a0aec0 !important;
+            }
+
+            .dark-mode .alert {
+                background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+                border: 1px solid #4a5568;
+                color: #e2e8f0;
+            }
+
+            .dark-mode .alert-success {
+                background: linear-gradient(135deg, rgba(72, 187, 120, 0.2) 0%, rgba(56, 178, 172, 0.1) 100%);
+                border-color: #48bb78;
+                color: #9ae6b4;
+            }
+
+            .dark-mode .alert-danger {
+                background: linear-gradient(135deg, rgba(245, 101, 101, 0.2) 0%, rgba(237, 137, 54, 0.1) 100%);
+                border-color: #f56565;
+                color: #fed7d7;
+            }
+
+            .dark-mode .btn-outline-secondary {
+                color: #a0aec0;
+                border-color: #4a5568;
+                background: transparent;
+                transition: all 0.3s ease;
+            }
+
+            .dark-mode .btn-outline-secondary:hover {
+                background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+                border-color: #718096;
+                color: #e2e8f0;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+
+            .dark-mode .btn-primary {
+                background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+                border: none;
+                transition: all 0.3s ease;
+            }
+
+            .dark-mode .btn-primary:hover {
+                background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
+            }
+
+            .dark-mode .text-danger {
+                color: #f56565 !important;
+            }
+
+            .dark-mode .text-muted {
+                color: #a0aec0 !important;
+            }
+
+            .dark-mode .bg-light {
+                background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+                color: #e2e8f0 !important;
+                border: 1px solid #718096;
+            }
+
+            .dark-mode .border-primary {
+                border-color: #3182ce !important;
+            }
+
+            .dark-mode .border-bottom {
+                border-bottom-color: #4a5568 !important;
+            }
+
+            .dark-mode .text-dark {
+                color: #e2e8f0 !important;
+            }
+
+            .dark-mode .fw-bold {
+                color: #e2e8f0;
+                font-weight: 600;
+            }
+
+            .dark-mode .invalid-feedback {
+                color: #f56565;
+                font-size: 0.875rem;
+            }
+
+            .dark-mode .is-invalid {
+                border-color: #f56565 !important;
+                box-shadow: 0 0 0 1px #f56565;
+            }
+
+            .dark-mode .is-invalid:focus {
+                border-color: #f56565 !important;
+                box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.2) !important;
+            }
+
+            /* Estilos para la imagen de perfil en modo oscuro */
+            .dark-mode .border-primary.rounded-circle {
+                border: 3px solid #3182ce !important;
+                box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+            }
+
+            .dark-mode .bg-light.rounded-circle {
+                background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+            }
+
+            /* Efectos hover mejorados */
+            .dark-mode .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            }
+
+            .dark-mode .form-control:hover,
+            .dark-mode .form-select:hover {
+                border-color: #718096;
+                transform: translateY(-1px);
+            }
+
+            /* Animaciones suaves */
+            .card, .btn, .alert, .form-control, .form-select {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            /* Estilos para los headers de sección */
+            .dark-mode .bg-light.px-3.py-2.border-bottom.mb-3.fw-bold.text-dark.rounded-top {
+                background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%) !important;
+                color: #e2e8f0 !important;
+                border: 1px solid #718096;
+                border-radius: 8px 8px 0 0 !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Estilos para el header principal */
+            .dark-mode h1.h3 {
+                color: #e2e8f0;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Estilos para placeholders */
+            .dark-mode .form-control::placeholder {
+                color: #a0aec0;
+            }
+
+            .dark-mode .form-select option {
+                background-color: #2d3748;
+                color: #e2e8f0;
+            }
+        </style>
+    </th:block>
 </head>
 <body>
 <section layout:fragment="content" class="flex-grow-1 container-fluid">

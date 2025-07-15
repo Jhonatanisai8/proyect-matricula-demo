@@ -7,6 +7,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:fragment="title">Dashboard del Docente</title>
+    <th:block layout:fragment="styles">
+        <style>
+            /* Estilos específicos para modo oscuro en dashboard del docente */
+            .dark-mode .card {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border-color: #404040;
+            }
+
+            .dark-mode .card-header.bg-info {
+                background-color: #0dcaf0 !important;
+                color: #000 !important;
+            }
+
+            .dark-mode .card-header.bg-warning {
+                background-color: #ffc107 !important;
+                color: #000 !important;
+            }
+
+            .dark-mode .btn-primary {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+
+            .dark-mode .btn-primary:hover {
+                background-color: #0b5ed7;
+                border-color: #0b5ed7;
+            }
+
+            .dark-mode .btn-info {
+                background-color: #0dcaf0;
+                border-color: #0dcaf0;
+                color: #000;
+            }
+
+            .dark-mode .btn-info:hover {
+                background-color: #31d2f2;
+                border-color: #31d2f2;
+                color: #000;
+            }
+
+            .dark-mode .btn-success {
+                background-color: #198754;
+                border-color: #198754;
+            }
+
+            .dark-mode .btn-success:hover {
+                background-color: #157347;
+                border-color: #157347;
+            }
+
+            .dark-mode .alert {
+                background-color: #2d2d2d;
+                border-color: #404040;
+                color: #e0e0e0;
+            }
+
+            .dark-mode .alert-success {
+                background-color: rgba(25, 135, 84, 0.2);
+                border-color: #198754;
+                color: #75b798;
+            }
+
+            .dark-mode .alert-danger {
+                background-color: rgba(220, 53, 69, 0.2);
+                border-color: #dc3545;
+                color: #f5c2c7;
+            }
+
+            .dark-mode .text-muted {
+                color: #a0a0a0 !important;
+            }
+
+            .dark-mode .card-title {
+                color: #e0e0e0;
+            }
+
+            .dark-mode .card-text {
+                color: #d1d5db;
+            }
+
+            /* Animaciones suaves para transiciones */
+            .card, .btn, .alert {
+                transition: all 0.3s ease;
+            }
+
+            /* Efectos hover mejorados para modo oscuro */
+            .dark-mode .card:hover {
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .dark-mode .btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            }
+        </style>
+    </th:block>
 </head>
 <body>
 <section layout:fragment="content" class="flex-grow-1 container-fluid">
