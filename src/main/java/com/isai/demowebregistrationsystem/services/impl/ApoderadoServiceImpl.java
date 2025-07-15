@@ -324,15 +324,23 @@ public class ApoderadoServiceImpl implements ApoderadoService {
                 .map(estudiante -> {
                     AtomicReference<Integer> idMatriculaActualRef = new AtomicReference<>(null);
 
-                    if (periodoActual != null) {
-                        Optional<Matricula> matriculaOptional = matriculaRepository
-                                .findByEstudiante_IdEstudianteAndPeriodoAcademico_IdPeriodoAndEstadoMatricula(
+                    // Buscar cualquier matrícula activa o pendiente para el estudiante
+                    Optional<Matricula> matriculaOptional = matriculaRepository
+                            .findByEstudiante_IdEstudianteAndEstadoMatricula(
+                                    estudiante.getIdEstudiante(),
+                                    "ACTIVA"
+                            );
+                    
+                    // Si no encuentra activa, buscar pendiente
+                    if (matriculaOptional.isEmpty()) {
+                        matriculaOptional = matriculaRepository
+                                .findByEstudiante_IdEstudianteAndEstadoMatricula(
                                         estudiante.getIdEstudiante(),
-                                        periodoActual.getIdPeriodo(),
-                                        "ACTIVA"
+                                        "PENDIENTE"
                                 );
-                        matriculaOptional.ifPresent(matricula -> idMatriculaActualRef.set(matricula.getIdMatricula()));
                     }
+                    
+                    matriculaOptional.ifPresent(matricula -> idMatriculaActualRef.set(matricula.getIdMatricula()));
 
                     return EstudianteListaApoderadoDTO.builder()
                             .idEstudiante(estudiante.getIdEstudiante())
