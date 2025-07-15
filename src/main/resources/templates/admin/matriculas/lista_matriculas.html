@@ -1,101 +1,109 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/layout-admin.html}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/layout-admin.html}">
+
 <head>
     <meta charset="UTF-8">
     <title layout:fragment="title">Listado de Matriculas</title>
+    <style>
+        .btn-buscar {
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+    </style>
 </head>
-<body>
-<header layout:fragment="header" class="mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Listado de Matriculas</h1>
-</header>
 
-<section layout:fragment="content">
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Matriculas</h6>
-            <div class="search-bar">
-                <form th:action="@{/matriculas}" method="get"
-                      class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                    <div class="input-group">
-                        <input type="text" name="search" th:value="${search}"
-                               class="form-control bg-light border-0 small"
-                               placeholder="Buscar por número de matrícula, estudiante..." aria-label="Search"
-                               aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-search fa-sm"></i>
-                            </button>
+<body>
+    <header layout:fragment="header" class="mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Listado de Matriculas</h1>
+    </header>
+
+    <section layout:fragment="content">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Matriculas</h6>
+                <div class="search-bar">
+                    <form th:action="@{/admin/matricula}" method="get"
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" name="search" th:value="${search}"
+                                class="form-control bg-light border-0 small"
+                                placeholder="Buscar por número de matrícula, estudiante..." aria-label="Search"
+                                aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btn-buscar" type="submit">
+                                    <i class="fas fa-search fa-sm">Buscar</i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Número de Matrícula</th>
+                                <th>Fecha de Matrícula</th>
+                                <th>Estado</th>
+                                <th>Estudiante</th>
+                                <th>Grado</th>
+                                <th>Período Académico</th>
+                                <th>Realizada por Apoderado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="matricula : ${matriculasPage.content}">
+                                <td th:text="${matricula.numeroMatricula}"></td>
+                                <td th:text="${#temporals.format(matricula.fechaMatricula, 'dd-MM-yyyy')}"></td>
+                                <td th:text="${matricula.estadoMatricula}"></td>
+                                <td th:text="${matricula.nombreEstudiante + ' ' + matricula.apellidoEstudiante}"></td>
+                                <td th:text="${matricula.nombreGrado}"></td>
+                                <td th:text="${matricula.nombrePeriodoAcademico}"></td>
+                                <td th:text="${matricula.nombreApoderadoRealiza}"></td>
+                                <td>
+                                    <a th:href="@{/admin/matricula/{id}(id=${matricula.id})}"
+                                        class="btn btn-info btn-sm">Ver
+                                        Detalle</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${matriculasPage.content.isEmpty()}">
+                                <td colspan="8" class="text-center">No se encontraron matrículas.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${matriculasPage.first} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/matriculas(page=${0}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">Primero</a>
+                        </li>
+                        <li class="page-item" th:classappend="${matriculasPage.first} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/matriculas(page=${currentPage - 1}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">Anterior</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, matriculasPage.totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link"
+                                th:href="@{/matriculas(page=${i}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}"
+                                th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${matriculasPage.last} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/matriculas(page=${currentPage + 1}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">Siguiente</a>
+                        </li>
+                        <li class="page-item" th:classappend="${matriculasPage.last} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/matriculas(page=${matriculasPage.totalPages - 1}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">Último</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                    <tr>
-                        <th>Número de Matrícula</th>
-                        <th>Fecha de Matrícula</th>
-                        <th>Estado</th>
-                        <th>Estudiante</th>
-                        <th>Grado</th>
-                        <th>Período Académico</th>
-                        <th>Realizada por Apoderado</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="matricula : ${matriculasPage.content}">
-                        <td th:text="${matricula.numeroMatricula}"></td>
-                        <td th:text="${#temporals.format(matricula.fechaMatricula, 'dd-MM-yyyy')}"></td>
-                        <td th:text="${matricula.estadoMatricula}"></td>
-                        <td th:text="${matricula.nombreEstudiante + ' ' + matricula.apellidoEstudiante}"></td>
-                        <td th:text="${matricula.nombreGrado}"></td>
-                        <td th:text="${matricula.nombrePeriodoAcademico}"></td>
-                        <td th:text="${matricula.nombreApoderadoRealiza}"></td>
-                        <td>
-                            <a th:href="@{/admin/matricula/{id}(id=${matricula.id})}" class="btn btn-info btn-sm">Ver
-                                Detalle</a>
-                        </td>
-                    </tr>
-                    <tr th:if="${matriculasPage.content.isEmpty()}">
-                        <td colspan="8" class="text-center">No se encontraron matrículas.</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" th:classappend="${matriculasPage.first} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/matriculas(page=${0}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">Primero</a>
-                    </li>
-                    <li class="page-item" th:classappend="${matriculasPage.first} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/matriculas(page=${currentPage - 1}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">Anterior</a>
-                    </li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(0, matriculasPage.totalPages - 1)}"
-                        th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link"
-                           th:href="@{/matriculas(page=${i}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}"
-                           th:text="${i + 1}"></a>
-                    </li>
-                    <li class="page-item" th:classappend="${matriculasPage.last} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/matriculas(page=${currentPage + 1}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">Siguiente</a>
-                    </li>
-                    <li class="page-item" th:classappend="${matriculasPage.last} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/matriculas(page=${matriculasPage.totalPages - 1}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">Último</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</section>
+    </section>
 </body>
+
 </html>
