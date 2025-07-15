@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title">Detalle de Apoderado</title>
+    <style layout:fragment="styles">
+        /* Estilos personalizados para la vista de detalle */
+        .profile-picture-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px auto; /* Centrar y añadir espacio inferior */
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--bs-primary); /* Borde más distintivo */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+        }
+
+        .profile-picture {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-label {
+            font-weight: 600; /* Ligeramente más negrita que strong */
+            color: #495057; /* Un color más suave que el negro puro */
+        }
+
+        .info-value {
+            color: #212529;
+        }
+
+        .section-header {
+            background-color: #f8f9fa; /* Fondo ligeramente gris para las cabeceras de sección */
+            border-left: 5px solid var(--bs-primary); /* Borde de color primario a la izquierda */
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: .25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header h5 {
+            margin-bottom: 0;
+            color: var(--bs-primary);
+        }
+
+        .section-header i {
+            margin-right: 10px;
+            color: var(--bs-primary);
+        }
+
+        .detail-row {
+            margin-bottom: 15px; /* Espaciado entre cada fila de detalle */
+        }
+
+        .detail-item {
+            padding-left: 10px; /* Pequeño padding para los íconos */
+        }
+
+        .detail-item i {
+            width: 20px; /* Ancho fijo para iconos para alineación */
+            text-align: center;
+            margin-right: 5px;
+            color: var(--bs-secondary); /* Color de ícono más sutil */
+        }
+    </style>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-info-circle-fill me-2"></i>Detalle de Apoderado
+    </h1>
+    <p class="lead text-muted mb-0">Información detallada del apoderado.</p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Información del Apoderado</h6>
+                <div>
+                    <a th:href="@{/admin/apoderados/editar/{id}(id=${apoderado.idApoderado})}"
+                       class="btn btn-warning btn-sm me-2">
+                        <i class="bi bi-pencil me-1"></i> Editar
+                    </a>
+                    <a th:href="@{/admin/apoderados}" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-arrow-left me-1"></i> Volver a la Lista
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center mb-4">
+                    <div class="col-md-3 text-center">
+                        <div class="profile-picture-container">
+                            <img th:if="${apoderado.rutaImagen != null and !apoderado.rutaImagen.isEmpty()}"
+                                 th:src="@{/assets/{filename}(filename=${apoderado.rutaImagen})}"
+                                 alt="Foto de perfil de la Persona"
+                                 class="profile-picture">
+                            <img th:unless="${apoderado.rutaImagen != null and !apoderado.rutaImagen.isEmpty()}"
+                                 th:src="@{/img/default-profile.png}"
+                                 alt="Sin foto de perfil"
+                                 class="profile-picture">
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <h3 class="mb-2 text-primary" th:text="${apoderado.nombres + ' ' + apoderado.apellidos}">Nombre
+                            Completo</h3>
+                        <p class="lead text-muted mb-1">
+                            <i class="bi bi-person-badge-fill me-2"></i>DNI: <span th:text="${apoderado.dni}"></span>
+                        </p>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-hash me-2"></i>ID Apoderado: <span
+                                th:text="${apoderado.idApoderado}"></span>
+                        </p>
+                    </div>
+                </div>
+
+                <hr class="my-4"/>
+
+                <div class="section-header">
+                    <i class="bi bi-person-fill"></i>
+                    <h5>Información Personal</h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-calendar-event"></i> Fecha de Nacimiento:</span>
+                        <span class="info-value"
+                              th:text="${apoderado.fechaNacimiento != null ? #temporals.format(apoderado.fechaNacimiento, 'dd-MM-yyyy') : 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-gender-ambiguous"></i> Género:</span>
+                        <span class="info-value" th:text="${apoderado.genero ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-heart"></i> Estado Civil:</span>
+                        <span class="info-value" th:text="${apoderado.estadoCivil ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-file-earmark-text"></i> Tipo de Documento:</span>
+                        <span class="info-value" th:text="${apoderado.tipoDocumento ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-12 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-geo-alt"></i> Dirección:</span>
+                        <span class="info-value" th:text="${apoderado.direccion ?: 'N/A'}"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4"/>
+
+                <div class="section-header">
+                    <i class="bi bi-phone"></i>
+                    <h5>Información de Contacto</h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-telephone"></i> Teléfono:</span>
+                        <span class="info-value" th:text="${apoderado.telefono ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-envelope"></i> Email Personal:</span>
+                        <span class="info-value" th:text="${apoderado.emailPersonal ?: 'N/A'}"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4"/>
+
+                <div class="section-header">
+                    <i class="bi bi-briefcase"></i>
+                    <h5>Información Laboral y Económica</h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-building"></i> Ocupación:</span>
+                        <span class="info-value" th:text="${apoderado.ocupacion ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-geo-alt"></i> Lugar de Trabajo:</span>
+                        <span class="info-value" th:text="${apoderado.lugarTrabajo ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-phone-vibrate"></i> Teléfono Trabajo:</span>
+                        <span class="info-value" th:text="${apoderado.telefonoTrabajo ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-cash-stack"></i> Ingreso Mensual:</span>
+                        <span class="info-value"
+                              th:text="${apoderado.ingresoMensual != null ? #numbers.formatCurrency(apoderado.ingresoMensual) : 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-mortarboard"></i> Nivel Educativo:</span>
+                        <span class="info-value" th:text="${apoderado.nivelEducativo ?: 'N/A'}"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4"/>
+
+                <div class="section-header">
+                    <i class="bi bi-people-fill"></i>
+                    <h5>Relación y Responsabilidades</h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-person-lines-fill"></i> Parentesco:</span>
+                        <span class="info-value" th:text="${apoderado.parentesco ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-star-fill"></i> Es Principal:</span>
+                        <span class="info-value"
+                              th:text="${apoderado.esPrincipal != null ? (apoderado.esPrincipal ? 'Sí' : 'No') : 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-hand-thumbs-up"></i> Autorizado a Recoger:</span>
+                        <span class="info-value"
+                              th:text="${apoderado.autorizadoRecoger != null ? (apoderado.autorizadoRecoger ? 'Sí' : 'No') : 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-person-check"></i> Referencia Personal:</span>
+                        <span class="info-value" th:text="${apoderado.referenciaPersonal ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-phone-flip"></i> Teléfono Referencia:</span>
+                        <span class="info-value" th:text="${apoderado.telefonoReferencia ?: 'N/A'}"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4"/>
+
+                <div class="section-header">
+                    <i class="bi bi-person-circle"></i>
+                    <h5>Datos de Usuario Asociado</h5>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-person-fill-check"></i> Nombre de Usuario:</span>
+                        <span class="info-value" th:text="${apoderado.userName ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3 detail-item">
+                        <span class="info-label"><i class="bi bi-fingerprint"></i> ID Usuario:</span>
+                        <span class="info-value" th:text="${apoderado.idUsuario ?: 'N/A'}"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-docente.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Registrar Asistencia</title>
+    <th:block layout:fragment="styles">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+              integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KenTlPMBOX/I7PmO7NveS/JwSgD7gefdgRz0B+oNcGTyNP8Qy0g=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <style>
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+
+            .card-header.bg-primary-custom {
+                background-image: linear-gradient(to right, #007bff, #0056b3); /* Azul de Bootstrap */
+                border-bottom: 1px solid rgba(0, 0, 0, .125);
+                color: white;
+            }
+
+            .asistencia-radio-group label {
+                margin-right: 15px;
+                cursor: pointer;
+            }
+
+            .asistencia-radio-group input[type="radio"] {
+                margin-right: 5px;
+            }
+
+            .form-check-input {
+                margin-top: .3rem;
+            }
+
+            .observaciones-input {
+                width: 100%;
+                resize: vertical;
+                min-height: 38px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <header class="mb-4 d-flex justify-content-between align-items-center">
+            <h1 class="h3 text-primary"><i class="fas fa-calendar-check me-2"></i> Registrar Asistencia</h1>
+            <a th:href="@{/docente/dashboard}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Dashboard
+            </a>
+        </header>
+
+        <div id="alertContainer"></div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary-custom py-3">
+                <h5 class="mb-0"><i class="fas fa-filter me-2"></i> Seleccionar Horario y Fecha</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label for="horarioSelect" class="form-label font-weight-bold">
+                            Seleccionar Horario:
+                        </label>
+                        <select id="horarioSelect" class="form-select">
+                            <option value="" disabled selected>-- Seleccione un horario --</option>
+                            <option th:each="horario : ${viewData.horariosParaAsistencia}"
+                                    th:value="${horario.idHorario}"
+                                    th:text="${horario.nombreCurso + ' (' + horario.nombreGrado + ' - ' + horario.nombreSeccion + ' - ' + horario.diaSemana + ' ' + #temporals.format(horario.horaInicio, 'HH:mm') + '-' + #temporals.format(horario.horaFin, 'HH:mm') + ' - ' + horario.nombrePeriodoAcademico + ')'}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="fechaAsistenciaInput" class="form-label font-weight-bold">
+                            Fecha de Asistencia:
+                        </label>
+                        <input type="date" id="fechaAsistenciaInput" class="form-control"
+                               th:value="${currentDate}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary-custom py-3">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Listado de Estudiantes y Asistencia</h5>
+            </div>
+            <div class="card-body">
+                <div id="loadingStudentsMessage" class="text-center text-info d-none p-4">
+                    <div class="spinner-border text-info" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-2">Cargando estudiantes...</p>
+                </div>
+
+                <div id="noStudentsForScheduleMessage" class="alert alert-info text-center d-none py-4" role="alert">
+                    <p class="lead mb-0"><i class="fas fa-info-circle me-2"></i> No hay estudiantes matriculados
+                        asociados a este horario.</p>
+                </div>
+
+                <form id="registroAsistenciaForm">
+                    <input type="hidden" id="selectedHorarioId" name="idHorario" value="">
+                    <input type="hidden" id="selectedFechaAsistencia" name="fechaAsistencia" value="">
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombres Completos</th>
+                                <th>Sección</th>
+                                <th>Estado</th>
+                                <th>Justificada</th>
+                                <th>Observaciones</th>
+                            </tr>
+                            </thead>
+                            <tbody id="estudiantesAsistenciaTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Seleccione un horario y una fecha para
+                                    registrar la asistencia.
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" id="guardarAsistenciaBtn" class="btn btn-success btn-lg" disabled>
+                            <i class="fas fa-save me-2"></i> Guardar Asistencia
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+
+        const apiEstudiantesAsistenciaUrl = /*[[@{/docente/api/asistencia/estudiantes}]]*/ '/docente/api/asistencia/estudiantes';
+        const apiRegistrarAsistenciaUrl = /*[[@{/docente/api/asistencia/registrar}]]*/ '/docente/api/asistencia/registrar';
+        const ESTADO_ASISTENCIA_ENUM = {
+            PRESENTE: "PRESENTE",
+            AUSENTE: "AUSENTE",
+            TARDE: "TARDE"
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const horarioSelect = document.getElementById('horarioSelect');
+            const fechaAsistenciaInput = document.getElementById('fechaAsistenciaInput');
+            const estudiantesAsistenciaTableBody = document.getElementById('estudiantesAsistenciaTableBody');
+            const loadingStudentsMessage = document.getElementById('loadingStudentsMessage');
+            const noStudentsForScheduleMessage = document.getElementById('noStudentsForScheduleMessage');
+            const guardarAsistenciaBtn = document.getElementById('guardarAsistenciaBtn');
+            const selectedHorarioIdInput = document.getElementById('selectedHorarioId');
+            const selectedFechaAsistenciaInput = document.getElementById('selectedFechaAsistencia');
+            const registroAsistenciaForm = document.getElementById('registroAsistenciaForm');
+            const alertContainer = document.getElementById('alertContainer');
+
+
+            function showAlert(message, type) {
+
+                alertContainer.innerHTML = '';
+                const alertHtml = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                        <span>${message}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                alertContainer.innerHTML = alertHtml;
+
+                setTimeout(() => {
+                    const alertElement = alertContainer.querySelector('.alert');
+                    if (alertElement) {
+                        new bootstrap.Alert(alertElement).close();
+                    }
+                }, 5000);
+            }
+
+
+            async function loadEstudiantesConAsistencia(idHorario, fechaAsistencia) {
+                loadingStudentsMessage.classList.remove('d-none');
+                estudiantesAsistenciaTableBody.innerHTML = '';
+                noStudentsForScheduleMessage.classList.add('d-none');
+                guardarAsistenciaBtn.disabled = true;
+
+
+                selectedHorarioIdInput.value = idHorario;
+                selectedFechaAsistenciaInput.value = fechaAsistencia;
+
+                if (!idHorario || !fechaAsistencia) {
+                    loadingStudentsMessage.classList.add('d-none');
+                    estudiantesAsistenciaTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Seleccione un horario y una fecha para registrar la asistencia.</td></tr>';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${apiEstudiantesAsistenciaUrl}?idHorario=${idHorario}&fechaAsistencia=${fechaAsistencia}`);
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Error HTTP: ${response.status} - ${errorText}`);
+                    }
+                    const estudiantes = await response.json();
+
+                    loadingStudentsMessage.classList.add('d-none');
+
+                    if (estudiantes.length === 0) {
+                        noStudentsForScheduleMessage.classList.remove('d-none');
+                        estudiantesAsistenciaTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No se encontraron estudiantes para este horario.</td></tr>';
+                    } else {
+                        estudiantes.forEach(estudiante => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${estudiante.codigoEstudiante}</td>
+                                <td>${estudiante.nombresCompletos}</td>
+                                <td>${estudiante.nombreSeccion}</td>
+                                <td>
+                                    <div class="asistencia-radio-group" data-id-estudiante="${estudiante.idEstudiante}">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="estadoAsistencia_${estudiante.idEstudiante}"
+                                                   id="presente_${estudiante.idEstudiante}" value="${ESTADO_ASISTENCIA_ENUM.PRESENTE}"
+                                                   ${estudiante.estadoAsistenciaActual === ESTADO_ASISTENCIA_ENUM.PRESENTE ? 'checked' : ''}>
+                                            <label class="form-check-label" for="presente_${estudiante.idEstudiante}">Presente</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="estadoAsistencia_${estudiante.idEstudiante}"
+                                                   id="ausente_${estudiante.idEstudiante}" value="${ESTADO_ASISTENCIA_ENUM.AUSENTE}"
+                                                   ${estudiante.estadoAsistenciaActual === ESTADO_ASISTENCIA_ENUM.AUSENTE ? 'checked' : ''}>
+                                            <label class="form-check-label" for="ausente_${estudiante.idEstudiante}">Ausente</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="estadoAsistencia_${estudiante.idEstudiante}"
+                                                   id="tarde_${estudiante.idEstudiante}" value="${ESTADO_ASISTENCIA_ENUM.TARDE}"
+                                                   ${estudiante.estadoAsistenciaActual === ESTADO_ASISTENCIA_ENUM.TARDE ? 'checked' : ''}>
+                                            <label class="form-check-label" for="tarde_${estudiante.idEstudiante}">Tarde</label>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input justificada-checkbox" type="checkbox"
+                                               id="justificada_${estudiante.idEstudiante}"
+                                               data-id-estudiante="${estudiante.idEstudiante}"
+                                               ${estudiante.justificadaActual ? 'checked' : ''}>
+                                        <label class="form-check-label" for="justificada_${estudiante.idEstudiante}">Sí</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <textarea class="form-control form-control-sm observaciones-input"
+                                              data-id-estudiante="${estudiante.idEstudiante}"
+                                              placeholder="Observaciones...">${estudiante.observacionesActual || ''}</textarea>
+                                    </td>
+                            `;
+                            estudiantesAsistenciaTableBody.appendChild(row);
+                        });
+                        guardarAsistenciaBtn.disabled = false;
+                    }
+                } catch (error) {
+                    loadingStudentsMessage.classList.add('d-none');
+                    console.error("Error al cargar los estudiantes para asistencia:", error);
+                    showAlert("Error al cargar los estudiantes: " + error.message, "danger");
+                    estudiantesAsistenciaTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error al cargar los estudiantes.</td></tr>';
+                }
+            }
+
+
+            horarioSelect.addEventListener('change', function () {
+                const selectedHorarioId = this.value;
+                const selectedFecha = fechaAsistenciaInput.value;
+                loadEstudiantesConAsistencia(selectedHorarioId, selectedFecha);
+            });
+
+            fechaAsistenciaInput.addEventListener('change', function () {
+                const selectedHorarioId = horarioSelect.value;
+                const selectedFecha = this.value;
+                loadEstudiantesConAsistencia(selectedHorarioId, selectedFecha);
+            });
+
+
+            registroAsistenciaForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                guardarAsistenciaBtn.disabled = true;
+                guardarAsistenciaBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
+
+                const asistenciasParaEnviar = [];
+                document.querySelectorAll('#estudiantesAsistenciaTableBody tr').forEach(row => {
+                    const idEstudiante = parseInt(row.querySelector('.asistencia-radio-group').dataset.idEstudiante);
+                    const estadoAsistenciaRadio = row.querySelector(`input[name="estadoAsistencia_${idEstudiante}"]:checked`);
+                    const justificadaCheckbox = row.querySelector(`#justificada_${idEstudiante}`);
+                    const observacionesInput = row.querySelector(`.observaciones-input`);
+
+
+                    if (estadoAsistenciaRadio) {
+                        asistenciasParaEnviar.push({
+                            idEstudiante: idEstudiante,
+                            estadoAsistencia: estadoAsistenciaRadio.value,
+                            justificada: justificadaCheckbox ? justificadaCheckbox.checked : false,
+                            observaciones: observacionesInput ? (observacionesInput.value.trim() !== '' ? observacionesInput.value.trim() : null) : null
+                        });
+                    }
+                });
+
+                const requestBody = {
+                    idHorario: parseInt(selectedHorarioIdInput.value),
+                    fechaAsistencia: selectedFechaAsistenciaInput.value,
+                    asistencias: asistenciasParaEnviar
+                };
+
+                try {
+                    const response = await fetch(apiRegistrarAsistenciaUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    if (response.ok) {
+                        const mensaje = await response.text();
+                        showAlert(mensaje, "success");
+
+                        loadEstudiantesConAsistencia(selectedHorarioIdInput.value, selectedFechaAsistenciaInput.value);
+                    } else {
+                        const errorText = await response.text();
+                        showAlert(`Error al guardar asistencia: ${errorText}`, "danger");
+                        console.error("Error response from server:", errorText);
+                    }
+                } catch (error) {
+                    console.error("Error al enviar asistencia:", error);
+                    showAlert("Error de conexión al guardar asistencia. Intente de nuevo.", "danger");
+                } finally {
+                    guardarAsistenciaBtn.disabled = false;
+                    guardarAsistenciaBtn.innerHTML = '<i class="fas fa-save me-2"></i> Guardar Asistencia';
+                }
+            });
+
+
+            if (horarioSelect.options.length > 1) {
+                horarioSelect.value = horarioSelect.options[1].value;
+
+                const event = new Event('change');
+                horarioSelect.dispatchEvent(event);
+            } else {
+
+                estudiantesAsistenciaTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No tiene horarios asignados para registrar asistencia.</td></tr>';
+            }
+        });
+    </script>
+</th:block>
+</body>
+</html>

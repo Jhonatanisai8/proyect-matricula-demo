@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Listado de Horarios</title>
+    <th:block layout:fragment="styles">
+        <style>
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i class="bi bi-calendar-week me-2"></i> Gestión de Horarios</h1>
+        <a th:href="@{/admin/horarios/crear}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Horario
+        </a>
+    </header>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Listado de Horarios Registrados</h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(horarios)}" class="alert alert-info text-center">
+                No hay horarios registrados aún.
+            </div>
+            <div th:unless="${#lists.isEmpty(horarios)}" class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Día</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th>Curso</th>
+                        <th>Docente</th>
+                        <th>Grado</th>
+                        <th>Sección</th>
+                        <th>Salón</th>
+                        <th>Período</th>
+                        <th>Activo</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="horario : ${horarios}">
+                        <td th:text="${horario.idHorario}"></td>
+                        <td th:text="${horario.diaSemana}"></td>
+                        <td th:text="${#temporals.format(horario.horaInicio, 'HH:mm')}"></td>
+                        <td th:text="${#temporals.format(horario.horaFin, 'HH:mm')}"></td>
+                        <td th:text="${horario.nombreCurso}"></td>
+                        <td th:text="${horario.nombreDocente}"></td>
+                        <td th:text="${horario.nombreGrado}"></td>
+                        <td th:text="${horario.nombreSeccion}"></td>
+                        <td th:text="${horario.nombreSalon}"></td>
+                        <td th:text="${horario.nombrePeriodoAcademico}"></td>
+                        <td>
+                            <i th:if="${horario.activo}" class="bi bi-check-circle-fill text-success"
+                               title="Activo"></i>
+                            <i th:unless="${horario.activo}" class="bi bi-x-circle-fill text-danger"
+                               title="Inactivo"></i>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/horarios/{id}(id=${horario.idHorario})}"
+                               class="btn btn-info btn-sm me-1" title="Ver Detalles">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a th:href="@{/admin/horarios/editar/{id}(id=${horario.idHorario})}"
+                               class="btn btn-warning btn-sm me-1" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form th:action="@{/admin/horarios/eliminar/{id}(id=${horario.idHorario})}" method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar este horario?');">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

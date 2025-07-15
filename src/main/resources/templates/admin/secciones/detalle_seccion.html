@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title" th:text="'Detalle de Sección: ' + ${seccion.nombreSeccion}"></title>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i class="bi bi-info-circle me-2"></i> Detalle de Sección</h1>
+        <div>
+            <a th:href="@{/admin/secciones/editar/{id}(id=${seccion.idSeccion})}" class="btn btn-warning me-2">
+                <i class="bi bi-pencil me-1"></i> Editar Sección
+            </a>
+            <a th:href="@{/admin/secciones}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Volver al Listado
+            </a>
+        </div>
+    </header>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0" th:text="'Información de la Sección: ' + ${seccion.nombreSeccion}"></h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <strong>ID de Sección:</strong> <span th:text="${seccion.idSeccion}"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Nombre de Sección:</strong> <span th:text="${seccion.nombreSeccion}"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Grado Asociado:</strong> <span th:text="${seccion.nombreGrado}"></span> (<span
+                        th:text="${seccion.idGrado}"></span>)
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Período Académico:</strong> <span th:text="${seccion.nombrePeriodoAcademico}"></span> (<span
+                        th:text="${seccion.idPeriodoAcademico}"></span>)
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Docente Tutor:</strong> <span th:text="${seccion.nombreDocenteTutor}"></span>
+                    <span th:if="${seccion.idDocenteTutor != null}"> (<span th:text="${seccion.idDocenteTutor}"></span>)</span>
+                    <span th:if="${seccion.idDocenteTutor == null}" class="text-muted">(No asignado)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

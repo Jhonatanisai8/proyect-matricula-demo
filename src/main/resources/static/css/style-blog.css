@@ -1,0 +1,42 @@
+.blog {
+    padding: 100px 0;
+    text-align: center;
+    background-color: #070600;
+    color: #070600;
+}
+
+.blog-content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 35px;
+    color: #070600;
+}
+
+.blog-1 {
+    flex-basis: calc(33.3% -25px);
+    background-color: #279AF1;
+    color: #070600;
+    margin-left: 15px;
+}
+
+.blog samp {
+    font-size: 15px;
+}
+
+.blog p {
+    color: #070600;
+}
+
+.blog-1 img {
+    margin-bottom: 15px;
+}
+
+.blog-txt {
+    padding: 20px;
+}
+
+.blog-txt h3 {
+    color: #070600;
+    font-size: 18px;
+    margin: 15px 0;
+}

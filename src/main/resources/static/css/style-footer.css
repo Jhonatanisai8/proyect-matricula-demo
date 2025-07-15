@@ -1,0 +1,27 @@
+.footer {
+    padding: 100px 0;
+    background-color: #F7F7FF;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    margin-bottom: 100px 0;
+}
+
+.link a {
+    font-size: 17px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.link a:hover {
+    color: #0056b1;
+}
+
+.team {
+    color: #070600;
+    text-align: center;
+
+}

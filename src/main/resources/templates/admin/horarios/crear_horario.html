@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title"
+           th:text="${isEdit ? 'Editar Horario' : 'Crear Nuevo Horario'}"></title>
+    <th:block layout:fragment="styles">
+        <style>
+            .form-section-title {
+                background-color: #f8f9fa;
+                padding: 10px 15px;
+                border-bottom: 1px solid #e9ecef;
+                margin-bottom: 1rem;
+                font-weight: bold;
+                color: #343a40;
+                border-radius: 5px 5px 0 0;
+            }
+
+            .error-message {
+                color: #dc3545;
+                font-size: 0.875em;
+                margin-top: 0.25rem;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i th:class="${isEdit ? 'bi bi-pencil-square' : 'bi bi-plus-circle'}"></i>
+            <span th:text="${isEdit ? 'Editar Horario' : 'Crear Nuevo Horario'}"></span>
+        </h1>
+        <a th:href="@{/admin/horarios}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Listado
+        </a>
+    </header>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"
+                th:text="${isEdit ? 'Formulario de Edición de Horario' : 'Formulario de Registro de Horario'}"></h5>
+        </div>
+        <div class="card-body">
+            <form th:action="${isEdit ? '/admin/horarios/editar/' + horarioRegistroDTO.idHorario : '/admin/horarios/crear'}"
+                  th:object="${horarioRegistroDTO}" method="post">
+
+                <input type="hidden" th:field="*{idHorario}" th:if="${isEdit}"/>
+
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger alert-dismissible fade show"
+                     role="alert">
+                    <div th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error global</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="diaSemana" class="form-label">Día de la Semana <span
+                                class="text-danger">*</span></label>
+                        <select id="diaSemana" class="form-select" th:field="*{diaSemana}"
+                                th:classappend="${#fields.hasErrors('diaSemana') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un día --</option>
+                            <option th:each="dia : ${diasSemana}" th:value="${dia}" th:text="${dia}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('diaSemana')}"
+                             th:errors="*{diaSemana}"></div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="horaInicio" class="form-label">Hora de Inicio <span
+                                class="text-danger">*</span></label>
+                        <input type="time" class="form-control" id="horaInicio" th:field="*{horaInicio}"
+                               th:classappend="${#fields.hasErrors('horaInicio') ? 'is-invalid' : ''}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('horaInicio')}"
+                             th:errors="*{horaInicio}"></div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="horaFin" class="form-label">Hora de Fin <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control" id="horaFin" th:field="*{horaFin}"
+                               th:classappend="${#fields.hasErrors('horaFin') ? 'is-invalid' : ''}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('horaFin')}"
+                             th:errors="*{horaFin}"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="idCurso" class="form-label">Curso <span class="text-danger">*</span></label>
+                        <select id="idCurso" class="form-select" th:field="*{idCurso}"
+                                th:classappend="${#fields.hasErrors('idCurso') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un curso --</option>
+                            <option th:each="curso : ${cursos}" th:value="${curso.idCurso}"
+                                    th:text="${curso.nombreCurso + ' (' + curso.codigoCurso + ')'}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idCurso')}"
+                             th:errors="*{idCurso}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="idDocente" class="form-label">Docente <span class="text-danger">*</span></label>
+                        <select id="idDocente" class="form-select" th:field="*{idDocente}"
+                                th:classappend="${#fields.hasErrors('idDocente') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un docente --</option>
+                            <option th:each="docente : ${docentes}" th:value="${docente.idDocente}"
+                                    th:text="${docente.persona.nombres + ' ' + docente.persona.apellidos}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idDocente')}"
+                             th:errors="*{idDocente}"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="idGrado" class="form-label">Grado <span class="text-danger">*</span></label>
+                        <select id="idGrado" class="form-select" th:field="*{idGrado}"
+                                th:classappend="${#fields.hasErrors('idGrado') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un grado --</option>
+                            <option th:each="grado : ${grados}" th:value="${grado.idGrado}"
+                                    th:text="${grado.nombreGrado}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idGrado')}"
+                             th:errors="*{idGrado}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="idPeriodoAcademico" class="form-label">Período Académico <span
+                                class="text-danger">*</span></label>
+                        <select id="idPeriodoAcademico" class="form-select" th:field="*{idPeriodoAcademico}"
+                                th:classappend="${#fields.hasErrors('idPeriodoAcademico') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un período --</option>
+                            <option th:each="periodo : ${periodosAcademicos}" th:value="${periodo.idPeriodo}"
+                                    th:text="${periodo.nombrePeriodo + ' (' + periodo.anoAcademico + ')'}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idPeriodoAcademico')}"
+                             th:errors="*{idPeriodoAcademico}"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="idSalon" class="form-label">Salón <span class="text-danger">*</span></label>
+                        <select id="idSalon" class="form-select" th:field="*{idSalon}"
+                                th:classappend="${#fields.hasErrors('idSalon') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un salón --</option>
+                            <option th:each="salon : ${salones}" th:value="${salon.idSalon}"
+                                    th:text="${salon.nombreSalon + ' (' + salon.codigoSalon + ')'}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idSalon')}"
+                             th:errors="*{idSalon}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="idSeccion" class="form-label">Sección <span class="text-danger">*</span></label>
+                        <select id="idSeccion" class="form-select" th:field="*{idSeccion}"
+                                th:classappend="${#fields.hasErrors('idSeccion') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione una sección --</option>
+                            <option th:each="seccion : ${secciones}" th:value="${seccion.idSeccion}"
+                                    th:text="${seccion.nombreSeccion}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idSeccion')}"
+                             th:errors="*{idSeccion}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="observaciones" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="observaciones" th:field="*{observaciones}" rows="3"
+                              th:classappend="${#fields.hasErrors('observaciones') ? 'is-invalid' : ''}"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('observaciones')}"
+                         th:errors="*{observaciones}"></div>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="activo" th:field="*{activo}"
+                           th:classappend="${#fields.hasErrors('activo') ? 'is-invalid' : ''}">
+                    <label class="form-check-label" for="activo">
+                        Horario Activo
+                    </label>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('activo')}" th:errors="*{activo}"></div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="submit" class="btn btn-primary me-md-2">
+                        <i class="bi bi-save me-1"></i>
+                        <span th:text="${isEdit ? 'Guardar Cambios' : 'Registrar Horario'}"></span>
+                    </button>
+                    <a th:href="@{/admin/horarios}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

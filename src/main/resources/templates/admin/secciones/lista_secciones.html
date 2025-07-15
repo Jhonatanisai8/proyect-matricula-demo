@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Listado de Secciones</title>
+    <th:block layout:fragment="styles">
+        <style>
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i class="bi bi-bookmarks me-2"></i> Gestión de Secciones</h1>
+        <a th:href="@{/admin/secciones/crear}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Nueva Sección
+        </a>
+    </header>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Listado de Secciones Registradas</h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(secciones)}" class="alert alert-info text-center">
+                No hay secciones registradas aún.
+            </div>
+            <div th:unless="${#lists.isEmpty(secciones)}" class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre Sección</th>
+                        <th>Grado</th>
+                        <th>Período Académico</th>
+                        <th>Docente Tutor</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="seccion : ${secciones}">
+                        <td th:text="${seccion.idSeccion}"></td>
+                        <td th:text="${seccion.nombreSeccion}"></td>
+                        <td th:text="${seccion.nombreGrado}"></td>
+                        <td th:text="${seccion.nombrePeriodoAcademico}"></td>
+                        <td th:text="${seccion.nombreDocenteTutor}"></td>
+                        <td>
+                            <a th:href="@{/admin/secciones/{id}(id=${seccion.idSeccion})}"
+                               class="btn btn-info btn-sm me-1" title="Ver Detalles">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a th:href="@{/admin/secciones/editar/{id}(id=${seccion.idSeccion})}"
+                               class="btn btn-warning btn-sm me-1" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form th:action="@{/admin/secciones/eliminar/{id}(id=${seccion.idSeccion})}" method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta sección?');">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

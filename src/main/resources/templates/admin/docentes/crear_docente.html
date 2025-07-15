@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title"
+           th:text="${docenteRegistroDTO.idDocente != null ? 'Editar Docente' : 'Registrar Nuevo Docente'}"></title>
+
+    <th:block layout:fragment="styles">
+        <style>
+            .form-section-title {
+                background-color: #e9f1fb;
+                padding: 12px 16px;
+                border-left: 4px solid #0d6efd;
+                margin: 1.5rem 0 1rem;
+                font-weight: 600;
+                color: #0d6efd;
+                border-radius: 0.375rem;
+            }
+
+            .form-label {
+                font-weight: 500;
+                color: #495057;
+            }
+
+            .form-control:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            }
+
+            .btn-primary {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+
+            .btn-primary:hover {
+                background-color: #0b5ed7;
+                border-color: #0a58ca;
+            }
+
+            .btn-outline-secondary:hover {
+                background-color: #e2e6ea;
+            }
+
+            .card-header {
+                background-color: #0d6efd;
+                color: #fff;
+                font-weight: 500;
+                font-size: 1.1rem;
+            }
+
+            .img-fluid.rounded-circle {
+                border: 3px solid #6c757d;
+            }
+
+            .invalid-feedback {
+                font-size: 0.875em;
+            }
+
+            .form-text {
+                font-size: 0.85em;
+            }
+
+            .alert {
+                font-size: 0.95rem;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i
+                th:class="${docenteRegistroDTO.idDocente != null ? 'bi bi-pencil-square' : 'bi bi-person-plus-fill'}"></i>
+            <span th:text="${docenteRegistroDTO.idDocente != null ? 'Editar Docente' : 'Registrar Nuevo Docente'}"></span>
+        </h1>
+        <a th:href="@{/admin/docentes}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Listado
+        </a>
+    </header>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"
+                th:text="${docenteRegistroDTO.idDocente != null ? 'Formulario de Edición de Docente' : 'Formulario de Registro de Docente'}"></h5>
+        </div>
+        <div class="card-body">
+            <form th:action="${docenteRegistroDTO.idDocente != null ? '/admin/docentes/editar/' + docenteRegistroDTO.idDocente : '/admin/docentes/crear'}"
+                  th:object="${docenteRegistroDTO}" method="post" enctype="multipart/form-data">
+
+                <input type="hidden" th:field="*{idPersona}" th:if="${docenteRegistroDTO.idPersona != null}"/>
+                <input type="hidden" th:field="*{idDocente}" th:if="${docenteRegistroDTO.idDocente != null}"/>
+
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger alert-dismissible fade show"
+                     role="alert">
+                    <div th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error global</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+
+                <h6 class="form-section-title mt-4">Información Personal</h6>
+                <div class="col-md-6 mb-3">
+                    <label for="foto" class="form-label">Foto de Perfil:</label>
+                    <input type="file" class="form-control" id="foto" th:field="*{foto}" accept="image/*"
+                    >
+                    <div class="form-text text-muted small">Subir una imagen para el apoderado (opcional).</div>
+                </div>
+                <div class="col-md-6 mb-3 text-center">
+                    <div th:if="${docenteRegistroDTO.fotoUrlPersona != null and !docenteRegistroDTO.fotoUrlPersona.isEmpty()}">
+                        <label class="form-label">Foto Actual:</label>
+                        <div>
+                            <img th:src="@{/assets/{filename}(filename=${docenteRegistroDTO.fotoUrlPersona})}"
+                                 alt="Foto actual de perfil"
+                                 class="img-fluid rounded-circle border border-2 border-secondary shadow-sm"
+                                 style="width: 120px; height: 120px; object-fit: cover;">
+                        </div>
+                        <div class="form-text text-muted small mt-1">Se reemplazará si subes una nueva foto.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="dni" class="form-label">DNI <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="dni" th:field="*{dni}"
+                               th:classappend="${#fields.hasErrors('dni') ? 'is-invalid' : ''}"
+                               maxlength="20">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="nombres" class="form-label">Nombres <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nombres" th:field="*{nombres}"
+                               th:classappend="${#fields.hasErrors('nombres') ? 'is-invalid' : ''}"
+                               maxlength="100">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nombres')}"
+                             th:errors="*{nombres}"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="apellidos" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}"
+                               th:classappend="${#fields.hasErrors('apellidos') ? 'is-invalid' : ''}"
+                               maxlength="100">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('apellidos')}"
+                             th:errors="*{apellidos}"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento <span
+                                class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}"
+                               th:classappend="${#fields.hasErrors('fechaNacimiento') ? 'is-invalid' : ''}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaNacimiento')}"
+                             th:errors="*{fechaNacimiento}"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="genero" class="form-label">Género <span class="text-danger">*</span></label>
+                        <select id="genero" class="form-select" th:field="*{genero}"
+                                th:classappend="${#fields.hasErrors('genero') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione...</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('genero')}"
+                             th:errors="*{genero}"></div>
+                    </div>
+                    <!--                    <div class="col-md-4 mb-3">-->
+                    <!--                        <label for="estadoCivil" class="form-label">Estado Civil</label>-->
+                    <!--                        <input type="text" class="form-control" id="estadoCivil" th:field="*{estadoCivil}"-->
+                    <!--                               th:classappend="${#fields.hasErrors('estadoCivil') ? 'is-invalid' : ''}"-->
+                    <!--                               maxlength="50">-->
+                    <!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('estadoCivil')}"-->
+                    <!--                             th:errors="*{estadoCivil}"></div>-->
+                    <!--                    </div>-->
+
+                    <div class="col-md-4 mb-3">
+                        <label for="estadoCivil" class="form-label">Estado Civil:</label>
+                        <select class="form-select" id="estadoCivil" th:field="*{estadoCivil}"
+                                th:classappend="${#fields.hasErrors('estadoCivil') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione...</option>
+                            <option value="Soltero/a">Soltero/a</option>
+                            <option value="Casado/a">Casado/a</option>
+                            <option value="Divorciado/a">Divorciado/a</option>
+                            <option value="Viudo/a">Viudo/a</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('estadoCivil')}"
+                             th:errors="*{estadoCivil}"></div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" th:field="*{direccion}"
+                               th:classappend="${#fields.hasErrors('direccion') ? 'is-invalid' : ''}"
+                               maxlength="255">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('direccion')}"
+                             th:errors="*{direccion}"></div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" th:field="*{telefono}"
+                               th:classappend="${#fields.hasErrors('telefono') ? 'is-invalid' : ''}"
+                               maxlength="20">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('telefono')}"
+                             th:errors="*{telefono}"></div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="emailPersonal" class="form-label">Email Personal</label>
+                        <input type="email" class="form-control" id="emailPersonal" th:field="*{emailPersonal}"
+                               th:classappend="${#fields.hasErrors('emailPersonal') ? 'is-invalid' : ''}"
+                               maxlength="100">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('emailPersonal')}"
+                             th:errors="*{emailPersonal}"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!--                    <div class="col-md-4 mb-3">-->
+                    <!--                        <label for="tipoDocumento" class="form-label">Tipo de Documento <span-->
+                    <!--                                class="text-danger">*</span></label>-->
+                    <!--                        <input type="text" class="form-control" id="tipoDocumento" th:field="*{tipoDocumento}"-->
+                    <!--                               th:classappend="${#fields.hasErrors('tipoDocumento') ? 'is-invalid' : ''}"-->
+                    <!--                               maxlength="50">-->
+                    <!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tipoDocumento')}"-->
+                    <!--                             th:errors="*{tipoDocumento}"></div>-->
+                    <!--                    </div>-->
+
+                    <div class="col-md-4 mb-3">
+                        <label for="tipoDocumento" class="form-label">Tipo de Documento:</label>
+                        <select class="form-select" id="tipoDocumento" th:field="*{tipoDocumento}"
+                                th:classappend="${#fields.hasErrors('tipoDocumento') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione...</option>
+                            <option value="DNI">DNI</option>
+                            <option value="Pasaporte">Pasaporte</option>
+                            <option value="Carnet Extranjería">Carnet Extranjería</option>
+                            <option value="Cédula de Identidad">Cédula de Identidad</option>
+                            <option value="Licencia de Conducir">Licencia de Conducir</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tipoDocumento')}"
+                             th:errors="*{tipoDocumento}"></div>
+                    </div>
+
+                </div>
+
+                <h6 class="form-section-title mt-4">Información Profesional del Docente</h6>
+                <div class="row">
+                    <!--                    <div class="col-md-4 mb-3">-->
+                    <!--                        <label for="codigoDocente" class="form-label">Código Docente <span class="text-danger">*</span></label>-->
+                    <!--                        <input type="text" class="form-control" id="codigoDocente" th:field="*{codigoDocente}"-->
+                    <!--                               th:classappend="${#fields.hasErrors('codigoDocente') ? 'is-invalid' : ''}"-->
+                    <!--                               minlength="5" maxlength="50">-->
+                    <!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('codigoDocente')}"-->
+                    <!--                             th:errors="*{codigoDocente}"></div>-->
+                    <!--                    </div>-->
+                    <div class="col-md-4 mb-3">
+                        <label for="emailInstitucional" class="form-label">Email Institucional</label>
+                        <input type="email" class="form-control" id="emailInstitucional"
+                               th:field="*{emailInstitucional}"
+                               th:classappend="${#fields.hasErrors('emailInstitucional') ? 'is-invalid' : ''}"
+                               maxlength="100">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('emailInstitucional')}"
+                             th:errors="*{emailInstitucional}"></div>
+                    </div>
+
+                    <!--                    <div class="col-md-4 mb-3">-->
+                    <!--                        <label for="especialidadPrincipal" class="form-label">Especialidad Principal <span-->
+                    <!--                                class="text-danger">*</span></label>-->
+                    <!--                        <input type="text" class="form-control" id="especialidadPrincipal"-->
+                    <!--                               th:field="*{especialidadPrincipal}"-->
+                    <!--                               th:classappend="${#fields.hasErrors('especialidadPrincipal') ? 'is-invalid' : ''}"-->
+                    <!--                               maxlength="100">-->
+                    <!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('especialidadPrincipal')}"-->
+                    <!--                             th:errors="*{especialidadPrincipal}"></div>-->
+                    <!--                    </div>-->
+
+
+                    <div class="col-md-4 mb-3">
+                        <label for="especialidadPrincipal" class="form-label">Especialidad Principal:</label>
+                        <select class="form-select" id="especialidadPrincipal" th:field="*{especialidadPrincipal}"
+                                th:classappend="${#fields.hasErrors('especialidadPrincipal') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione...</option>
+                            <option value="Comunicación">Comunicación</option>
+                            <option value="Matemática">Matemática</option>
+                            <option value="Personal Social">Personal Social</option>
+                            <option value="Ciencia y Tecnología">Ciencia y Tecnología</option>
+                            <option value="Educación Física">Educación Física</option>
+                            <option value="Arte y Cultura">Arte y Cultura</option>
+                            <option value="Educación Religiosa">Educación Religiosa</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('especialidadPrincipal')}"
+                             th:errors="*{especialidadPrincipal}"></div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <!--                    <div class="col-md-4 mb-3">-->
+                    <!--                        <label for="especialidadSecundaria" class="form-label">Especialidad Secundaria</label>-->
+                    <!--                        <input type="text" class="form-control" id="especialidadSecundaria"-->
+                    <!--                               th:field="*{especialidadSecundaria}"-->
+                    <!--                               th:classappend="${#fields.hasErrors('especialidadSecundaria') ? 'is-invalid' : ''}"-->
+                    <!--                               maxlength="100">-->
+                    <!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('especialidadSecundaria')}"-->
+                    <!--                             th:errors="*{especialidadSecundaria}"></div>-->
+                    <!--                    </div>-->
+
+                    <div class="col-md-4 mb-3">
+                        <label for="especialidadSecundaria" class="form-label">Especialidad Secundaria:</label>
+                        <select class="form-select" id="especialidadSecundaria" th:field="*{especialidadSecundaria}"
+                                th:classappend="${#fields.hasErrors('especialidadSecundaria') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione...</option>
+                            <option value="Comunicación">Comunicación</option>
+                            <option value="Matemática">Matemática</option>
+                            <option value="Personal Social">Personal Social</option>
+                            <option value="Ciencia y Tecnología">Ciencia y Tecnología</option>
+                            <option value="Educación Física">Educación Física</option>
+                            <option value="Arte y Cultura">Arte y Cultura</option>
+                            <option value="Educación Religiosa">Educación Religiosa</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('especialidadSecundaria')}"
+                             th:errors="*{especialidadSecundaria}"></div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="tituloProfesional" class="form-label">Título Profesional <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="tituloProfesional" th:field="*{tituloProfesional}"
+                               th:classappend="${#fields.hasErrors('tituloProfesional') ? 'is-invalid' : ''}"
+                               maxlength="100">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tituloProfesional')}"
+                             th:errors="*{tituloProfesional}"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="universidadEgreso" class="form-label">Universidad de Egreso</label>
+                        <input type="text" class="form-control" id="universidadEgreso" th:field="*{universidadEgreso}"
+                               th:classappend="${#fields.hasErrors('universidadEgreso') ? 'is-invalid' : ''}"
+                               maxlength="255">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('universidadEgreso')}"
+                             th:errors="*{universidadEgreso}"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="fechaContratacion" class="form-label">Fecha de Contratación <span
+                                class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="fechaContratacion" th:field="*{fechaContratacion}"
+                               th:classappend="${#fields.hasErrors('fechaContratacion') ? 'is-invalid' : ''}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaContratacion')}"
+                             th:errors="*{fechaContratacion}"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="salarioBase" class="form-label">Salario Base <span
+                                class="text-danger">*</span></label>
+                        <input type="number" step="0.01" class="form-control" id="salarioBase" th:field="*{salarioBase}"
+                               th:classappend="${#fields.hasErrors('salarioBase') ? 'is-invalid' : ''}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('salarioBase')}"
+                             th:errors="*{salarioBase}"></div>
+                    </div>
+                    <!--                    <div class="col-md-4 mb-3">-->
+                    <!--                        <label for="tipoContrato" class="form-label">Tipo de Contrato <span class="text-danger">*</span></label>-->
+                    <!--                        <input type="text" class="form-control" id="tipoContrato" th:field="*{tipoContrato}"-->
+                    <!--                               th:classappend="${#fields.hasErrors('tipoContrato') ? 'is-invalid' : ''}"-->
+                    <!--                               maxlength="50">-->
+                    <!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tipoContrato')}"-->
+                    <!--                             th:errors="*{tipoContrato}"></div>-->
+                    <!--                    </div>-->
+
+                    <div class="col-md-4 mb-3">
+                        <label for="tipoContrato" class="form-label">Tipo de Contrato:</label>
+                        <select class="form-select" id="tipoContrato" th:field="*{tipoContrato}"
+                                th:classappend="${#fields.hasErrors('tipoContrato') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione...</option>
+                            <option value="Fijo">Fijo</option>
+                            <option value="Temporal">Temporal</option>
+                            <option value="Honorarios">Honorarios</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tipoContrato')}"
+                             th:errors="*{tipoContrato}"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!--                    <div class="col-md-4 mb-3">-->
+                    <!--                        <label for="estadoLaboral" class="form-label">Estado Laboral <span class="text-danger">*</span></label>-->
+                    <!--                        <input type="text" class="form-control" id="estadoLaboral" th:field="*{estadoLaboral}"-->
+                    <!--                               th:classappend="${#fields.hasErrors('estadoLaboral') ? 'is-invalid' : ''}"-->
+                    <!--                               maxlength="50">-->
+                    <!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('estadoLaboral')}"-->
+                    <!--                             th:errors="*{estadoLaboral}"></div>-->
+                    <!--                    </div>-->
+
+                    <div class="col-md-4 mb-3">
+                        <label for="estadoLaboral" class="form-label">Estado Laboral :</label>
+                        <select class="form-select" id="estadoLaboral" th:field="*{estadoLaboral}"
+                                th:classappend="${#fields.hasErrors('estadoLaboral') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione...</option>
+                            <option value="ACTIVO">ACTIVO</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('estadoLaboral')}"
+                             th:errors="*{estadoLaboral}"></div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="anosExperiencia" class="form-label">Años de Experiencia <span
+                                class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="anosExperiencia" th:field="*{anosExperiencia}"
+                               th:classappend="${#fields.hasErrors('anosExperiencia') ? 'is-invalid' : ''}"
+                               min="0">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('anosExperiencia')}"
+                             th:errors="*{anosExperiencia}"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="cvUrl" class="form-label">URL CV</label>
+                        <input type="text" class="form-control" id="cvUrl" th:field="*{cvUrl}"
+                               th:classappend="${#fields.hasErrors('cvUrl') ? 'is-invalid' : ''}"
+                               maxlength="255" placeholder="https://example.com/cv_docente.pdf">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('cvUrl')}" th:errors="*{cvUrl}"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="coordinador" th:field="*{coordinador}">
+                        <label class="form-check-label" for="coordinador">Es Coordinador</label>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('coordinador')}"
+                             th:errors="*{coordinador}"></div>
+                    </div>
+                </div>
+
+                <h6 class="form-section-title mt-4" th:if="${docenteRegistroDTO.idDocente == null}">Información de
+                    Usuario (Solo para nuevo docente)</h6>
+                <p class="text-muted mb-3" th:if="${docenteRegistroDTO.idDocente != null}">
+                    Si desea cambiar el nombre de usuario o la contraseña, ingrese los nuevos valores a continuación.
+                    Déjelos vacíos para mantener los actuales.
+                </p>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="username" class="form-label">Nombre de Usuario <span class="text-danger"
+                                                                                         th:if="${docenteRegistroDTO.idDocente == null}">*</span></label>
+                        <input type="text" class="form-control" id="username" th:field="*{username}"
+                               th:classappend="${#fields.hasErrors('username') ? 'is-invalid' : ''}"
+                               maxlength="50" th:required="${docenteRegistroDTO.idDocente == null}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}"
+                             th:errors="*{username}"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="password" class="form-label">Contraseña <span class="text-danger"
+                                                                                  th:if="${docenteRegistroDTO.idDocente == null}">*</span></label>
+                        <input type="password" class="form-control" id="password" th:field="*{password}"
+                               th:classappend="${#fields.hasErrors('password') ? 'is-invalid' : ''}"
+                               th:required="${docenteRegistroDTO.idDocente == null}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}"
+                             th:errors="*{password}"></div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="confirmPassword" class="form-label">Confirmar Contraseña <span class="text-danger"
+                                                                                                   th:if="${docenteRegistroDTO.idDocente == null}">*</span></label>
+                        <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}"
+                               th:classappend="${#fields.hasErrors('confirmPassword') ? 'is-invalid' : ''}"
+                               th:required="${docenteRegistroDTO.idDocente == null}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}"
+                             th:errors="*{confirmPassword}"></div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="submit" class="btn btn-primary me-md-2">
+                        <i class="bi bi-save me-1"></i> <span
+                            th:text="${docenteRegistroDTO.idDocente != null ? 'Guardar Cambios' : 'Registrar Docente'}"></span>
+                    </button>
+                    <a th:href="@{/admin/docentes}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+</th:block>
+</body>
+</html>

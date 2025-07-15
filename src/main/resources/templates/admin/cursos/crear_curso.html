@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title" th:text="${isEdit ? 'Editar Curso' : 'Registrar Curso'}"></title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-book-fill me-2"></i><span
+            th:text="${isEdit ? 'Editar Curso' : 'Registrar Nuevo Curso'}"></span>
+    </h1>
+    <p class="lead text-muted mb-0"
+       th:text="${isEdit ? 'Modifica los datos del curso existente.' : 'Ingresa la información para registrar un nuevo curso.'}"></p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"
+                    th:text="${isEdit ? 'Formulario de Edición de Curso' : 'Formulario de Registro de Curso'}"></h6>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/cursos/guardar}" th:object="${cursoDTO}" method="post">
+                    <input type="hidden" th:field="*{idCurso}"/>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nombreCurso" class="form-label">Nombre del Curso:</label>
+                            <input type="text" class="form-control" id="nombreCurso" th:field="*{nombreCurso}"
+                                   th:classappend="${#fields.hasErrors('nombreCurso') ? 'is-invalid' : ''}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombreCurso')}"
+                                 th:errors="*{nombreCurso}"></div>
+                            <div class="form-text text-muted small">Ej. Matemáticas, Comunicación.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="codigoCurso" class="form-label">Código del Curso:</label>
+                            <input type="text" class="form-control" id="codigoCurso" th:field="*{codigoCurso}"
+                                   th:classappend="${#fields.hasErrors('codigoCurso') ? 'is-invalid' : ''}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('codigoCurso')}"
+                                 th:errors="*{codigoCurso}"></div>
+                            <div class="form-text text-muted small">Código único para identificar el curso (ej. MAT101,
+                                COM203).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="idGrado" class="form-label">Grado Asociado:</label>
+                            <select class="form-select" id="idGrado" th:field="*{idGrado}"
+                                    th:classappend="${#fields.hasErrors('idGrado') ? 'is-invalid' : ''}" required>
+                                <option value="">Seleccione un Grado</option>
+                                <option th:each="grado : ${gradosActivos}"
+                                        th:value="${grado.idGrado}"
+                                        th:text="${grado.nombreGrado}"
+                                        th:selected="${grado.idGrado == cursoDTO.idGrado}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('idGrado')}"
+                                 th:errors="*{idGrado}"></div>
+                            <div class="form-text text-muted small">Solo se muestran grados activos.</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="areaConocimiento" class="form-label">Área de Conocimiento:</label>
+                            <input type="text" class="form-control" id="areaConocimiento" th:field="*{areaConocimiento}"
+                                   th:classappend="${#fields.hasErrors('areaConocimiento') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('areaConocimiento')}"
+                                 th:errors="*{areaConocimiento}"></div>
+                            <div class="form-text text-muted small">Ej. Ciencias, Humanidades, Arte.</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="creditos" class="form-label">Créditos:</label>
+                            <input type="number" class="form-control" id="creditos" th:field="*{creditos}"
+                                   th:classappend="${#fields.hasErrors('creditos') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('creditos')}"
+                                 th:errors="*{creditos}"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="horasSemanales" class="form-label">Horas Semanales:</label>
+                            <input type="number" class="form-control" id="horasSemanales" th:field="*{horasSemanales}"
+                                   th:classappend="${#fields.hasErrors('horasSemanales') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('horasSemanales')}"
+                                 th:errors="*{horasSemanales}"></div>
+                        </div>
+                        <div class="col-md-4 mb-3 form-check d-flex align-items-center justify-content-center pt-4">
+                            <input type="checkbox" class="form-check-input" id="esObligatorio"
+                                   th:field="*{esObligatorio}">
+                            <label class="form-check-label ms-2" for="esObligatorio">Es Obligatorio</label>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('esObligatorio')}"
+                                 th:errors="*{esObligatorio}"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción:</label>
+                        <textarea class="form-control" id="descripcion" rows="2" th:field="*{descripcion}"
+                                  th:classappend="${#fields.hasErrors('descripcion') ? 'is-invalid' : ''}"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}"
+                             th:errors="*{descripcion}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="prerequisitos" class="form-label">Prerequisitos:</label>
+                        <input type="text" class="form-control" id="prerequisitos" th:field="*{prerequisitos}"
+                               th:classappend="${#fields.hasErrors('prerequisitos') ? 'is-invalid' : ''}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('prerequisitos')}"
+                             th:errors="*{prerequisitos}"></div>
+                        <div class="form-text text-muted small">Cursos o conocimientos previos necesarios.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="competencias" class="form-label">Competencias:</label>
+                        <textarea class="form-control" id="competencias" rows="3" th:field="*{competencias}"
+                                  th:classappend="${#fields.hasErrors('competencias') ? 'is-invalid' : ''}"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('competencias')}"
+                             th:errors="*{competencias}"></div>
+                        <div class="form-text text-muted small">Lista de habilidades que se desarrollarán.</div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="activo" th:field="*{activo}">
+                        <label class="form-check-label" for="activo">Activo (Habilitado)</label>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('activo')}"
+                             th:errors="*{activo}"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a th:href="@{/admin/cursos}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i> <span
+                                th:text="${isEdit ? 'Actualizar Curso' : 'Registrar Curso'}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/apoderado-layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Mis Hijos</title>
+
+    <th:block layout:fragment="styles">
+        <style>
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+
+            .table th {
+                white-space: nowrap;
+            }
+
+            .action-buttons a {
+                margin-right: 5px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<header layout:fragment="header" class="mb-4 pb-3 border-bottom custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-people-fill me-2"></i>Mis Hijos
+    </h1>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary-custom text-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Listado de Estudiantes Vinculados</h5>
+                <a th:href="@{/apoderado/registrar-hijo}" class="btn btn-light btn-sm">
+                    <i class="fas fa-user-plus me-1"></i> Registrar Nuevo Hijo
+                </a>
+            </div>
+            <div class="card-body">
+
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div th:if="${hijos.isEmpty()}" class="alert alert-info text-center" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Aún no tienes ningún hijo registrado o vinculado en el sistema.
+                    <a th:href="@{/apoderado/registrar-hijo}" class="alert-link">¡Registra uno ahora!</a>
+                </div>
+
+                <div th:if="${!hijos.isEmpty()}" class="table-responsive">
+                    <table class="table table-hover table-striped border">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombres Completos</th>
+                            <th>DNI</th>
+                            <th>F. Nacimiento</th>
+                            <th>Email Educativo</th>
+                            <th>Tel. Emergencia</th>
+                            <th>Seguro</th>
+                            <th>Parentesco</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="hijo : ${hijos}">
+                            <td th:text="${hijo.codigoEstudiante}">EST-001</td>
+                            <td th:text="${hijo.nombresCompletos}">Juan Pérez Gómez</td>
+                            <td th:text="${hijo.dni}">12345678</td>
+                            <td th:text="${#temporals.format(hijo.fechaNacimiento, 'dd/MM/yyyy')}">01/01/2010</td>
+                            <td th:text="${hijo.emailEducativo}">juan.perez@escuela.com</td>
+                            <td th:text="${hijo.telefonoEmergencia}">987654321</td>
+                            <td>
+                                <span th:if="${hijo.seguroEscolar}" class="badge bg-success">Sí</span>
+                                <span th:if="${!hijo.seguroEscolar}" class="badge bg-danger">No</span>
+                            </td>
+                            <td th:text="${hijo.parentescoConApoderadoPrincipal}">Padre</td>
+                            <td class="action-buttons">
+                                <a th:href="@{/apoderado/notas_hijo/__${hijo.idEstudiante}__}"
+                                   class="btn btn-sm btn-info" title="Ver Notas">
+                                    <i class="fas fa-clipboard-list"></i> Ver Notas
+                                </a>
+                                <a th:href="@{/apoderado/asistencia_hijo/__${hijo.idEstudiante}__}"
+                                   class="btn btn-sm btn-warning" title="Ver Asistencia">
+                                    <i class="fas fa-user-check"></i> Ver Asistencia
+                                </a>
+
+                                <th:block th:if="${hijo.idMatriculaActual == null}">
+                                    <a th:href="@{/apoderado/matricula/{id}(id=${hijo.idEstudiante})}"
+                                       class="btn btn-sm btn-success ms-2" title="Realizar Matrícula">
+                                        <i class="fas fa-file-invoice"></i> Matricular
+                                    </a>
+                                </th:block>
+                                <th:block th:if="${hijo.idMatriculaActual != null}">
+                                    <button class="btn btn-sm btn-secondary ms-2" disabled title="Ya Matriculado">
+                                        <i class="fas fa-check-circle"></i> Matriculado
+                                    </button>
+                                </th:block>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+</th:block>
+</body>
+</html>

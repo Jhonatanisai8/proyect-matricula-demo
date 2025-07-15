@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title"
+           th:text="${matricula.idMatricula == null ? 'Realizar Matrícula' : 'Editar Matrícula'}"></title>
+</head>
+<body>
+
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <h2 class="mb-4" th:text="${matricula.idMatricula == null ? 'Realizar Matrícula' : 'Editar Matrícula'}"></h2>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <form th:action="@{/admin/estudiantes/guardar_matricula}"
+              th:object="${matricula}" method="post"
+              class="needs-validation" novalidate>
+
+            <div th:if="${#fields.hasErrors('global')}" class="alert alert-danger alert-dismissible fade show"
+                 role="alert">
+                <span th:each="err : ${#fields.errors('global')}" th:text="${err}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <input type="hidden" th:field="*{idMatricula}"/>
+            <input type="hidden" th:field="*{idEstudiante}"/>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-file-invoice me-2"></i> Datos de la Matrícula</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="numeroMatricula" class="form-label">Número de Matrícula</label>
+                            <input type="text" class="form-control" id="numeroMatricula" th:field="*{numeroMatricula}"
+                                   th:attrappend="readonly=${matricula.idMatricula != null ? true : false}"
+                                   th:title="${matricula.idMatricula != null ? 'El número de matrícula no puede ser modificado.' : ''}"/>
+                            <div class="form-text">Se generará automáticamente si se deja vacío al crear.</div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('numeroMatricula')}"
+                                 th:errors="*{numeroMatricula}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fechaMatricula" class="form-label">Fecha de Matrícula <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fechaMatricula" th:field="*{fechaMatricula}"
+                                   required/>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaMatricula')}"
+                                 th:errors="*{fechaMatricula}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="idPeriodoAcademico" class="form-label">Período Académico <span
+                                    class="text-danger">*</span></label>
+                            <select id="idPeriodoAcademico" class="form-select" th:field="*{idPeriodoAcademico}"
+                                    required onchange="cargarSecciones()">
+                                <option value="">Seleccione...</option>
+                                <option th:each="periodo : ${periodosAcademicos}"
+                                        th:value="${periodo.id}"
+                                        th:text="${periodo.nombrePeriodo}"
+                                        th:selected="${periodo.id == matricula.idPeriodoAcademico}">Periodo Académico
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('idPeriodoAcademico')}"
+                                 th:errors="*{idPeriodoAcademico}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="idGrado" class="form-label">Grado <span class="text-danger">*</span></label>
+                            <select id="idGrado" class="form-select" th:field="*{idGrado}" required
+                                    onchange="cargarSecciones()">
+                                <option value="">Seleccione...</option>
+                                <option th:each="grado : ${grados}"
+                                        th:value="${grado.id}"
+                                        th:text="${grado.nombreGrado}"
+                                        th:selected="${grado.id == matricula.idGrado}">Grado
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('idGrado')}"
+                                 th:errors="*{idGrado}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="idSeccion" class="form-label">Sección <span class="text-danger">*</span></label>
+                            <select id="idSeccion" class="form-select" th:field="*{idSeccion}" required>
+                                <option value="">Seleccione un grado y período...</option>
+                                <option th:each="seccion : ${secciones}"
+                                        th:value="${seccion.id}"
+                                        th:text="${seccion.nombreSeccion}"
+                                        th:selected="${seccion.id == matricula.idSeccion}">Sección
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('idSeccion')}"
+                                 th:errors="*{idSeccion}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="estadoMatricula" class="form-label">Estado de Matrícula <span
+                                    class="text-danger">*</span></label>
+                            <select id="estadoMatricula" class="form-select" th:field="*{estadoMatricula}" required>
+                                <option value="">Seleccione...</option>
+                                <option th:each="estadoEntry : ${estadosMatricula}"
+                                        th:value="${estadoEntry.key}"
+                                        th:text="${estadoEntry.value}">Estado
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('estadoMatricula')}"
+                                 th:errors="*{estadoMatricula}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modalidadPago" class="form-label">Modalidad de Pago <span
+                                    class="text-danger">*</span></label>
+                            <select id="modalidadPago" class="form-select" th:field="*{modalidadPago}" required>
+                                <option value="">Seleccione...</option>
+                                <option th:each="modalidadEntry : ${modalidadesPago}"
+                                        th:value="${modalidadEntry.key}"
+                                        th:text="${modalidadEntry.value}">Modalidad
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('modalidadPago')}"
+                                 th:errors="*{modalidadPago}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="montoMatricula" class="form-label">Monto Matricula</label>
+                            <input type="number" step="0.01" class="form-control" id="montoMatricula"
+                                   th:field="*{montoMatricula}"/>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('montoMatricula')}"
+                                 th:errors="*{montoMatricula}"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="observaciones" class="form-label">Observaciones</label>
+                            <textarea class="form-control" id="observaciones" th:field="*{observaciones}"
+                                      rows="3"></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('observaciones')}"
+                                 th:errors="*{observaciones}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="idApoderadoRealiza" class="form-label">Apoderado que realiza la matrícula
+                                <span class="text-danger">*</span></label>
+                            <select id="idApoderadoRealiza" class="form-select" th:field="*{idApoderadoRealiza}"
+                                    required>
+                                <option value="">Seleccione...</option>
+                                <option th:each="apoderado : ${apoderadosParaMatricula}"
+                                        th:value="${apoderado.id}"
+                                        th:text="${apoderado.nombreCompleto}">Nombre Apoderado
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('idApoderadoRealiza')}"
+                                 th:errors="*{idApoderadoRealiza}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mb-4">
+                <a th:href="@{/admin/estudiantes/detalle/{id}(id=${matricula.idEstudiante})}"
+                   class="btn btn-secondary me-2">
+                    <i class="fas fa-times-circle me-2"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i> <span
+                        th:text="${matricula.idMatricula == null ? 'Guardar Matrícula' : 'Actualizar Matrícula'}"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function cargarSecciones() {
+            const idGrado = document.getElementById('idGrado').value;
+            const idPeriodo = document.getElementById('idPeriodoAcademico').value;
+            const seccionesSelect = document.getElementById('idSeccion');
+
+            console.log('Llamada a cargarSecciones()');
+            console.log('idGrado:', idGrado, 'idPeriodo:', idPeriodo);
+
+            if (!idGrado || !idPeriodo || isNaN(parseInt(idGrado)) || isNaN(parseInt(idPeriodo))) {
+                console.warn('Grado o período inválido. Se cancela el fetch.');
+                seccionesSelect.innerHTML = '<option value="">Seleccione un grado y período válidos.</option>';
+                return;
+            }
+
+            seccionesSelect.innerHTML = '<option value="">Cargando secciones...</option>';
+
+            const url = /*[[@{/admin/estudiantes/api/secciones}]]*/ '/admin/estudiantes/api/secciones'
+                + '?idGrado=' + idGrado + '&idPeriodo=' + idPeriodo;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Secciones recibidas:', data);
+                    seccionesSelect.innerHTML = '<option value="">Seleccione una sección...</option>';
+
+                    if (data.length > 0) {
+                        data.forEach(seccion => {
+                            const option = document.createElement('option');
+                            option.value = seccion.id;
+                            option.textContent = seccion.nombreSeccion;
+                            seccionesSelect.appendChild(option);
+                        });
+
+                        const seccionActual = /*[[${matricula.idSeccion}]]*/ null;
+                        if (seccionActual) {
+                            seccionesSelect.value = seccionActual;
+                        }
+                    } else {
+                        seccionesSelect.innerHTML = '<option value="">No hay secciones disponibles.</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar secciones:', error);
+                    seccionesSelect.innerHTML = '<option value="">Error al cargar secciones.</option>';
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const gradoInicial = /*[[${matricula.idGrado}]]*/ null;
+            const periodoInicial = /*[[${matricula.idPeriodoAcademico}]]*/ null;
+
+            if (gradoInicial && periodoInicial) {
+                document.getElementById('idGrado').value = gradoInicial;
+                document.getElementById('idPeriodoAcademico').value = periodoInicial;
+                cargarSecciones();
+            }
+        });
+        /*]]>*/
+    </script>
+</th:block>
+</body>
+</html>

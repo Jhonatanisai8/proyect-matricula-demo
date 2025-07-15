@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title"
+           th:text="${isEdit ? 'Editar Sección' : 'Crear Nueva Sección'}"></title>
+    <th:block layout:fragment="styles">
+        <style>
+            .form-section-title {
+                background-color: #f8f9fa;
+                padding: 10px 15px;
+                border-bottom: 1px solid #e9ecef;
+                margin-bottom: 1rem;
+                font-weight: bold;
+                color: #343a40;
+                border-radius: 5px 5px 0 0;
+            }
+
+            .error-message {
+                color: #dc3545;
+                font-size: 0.875em;
+                margin-top: 0.25rem;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i th:class="${isEdit ? 'bi bi-pencil-square' : 'bi bi-plus-circle'}"></i>
+            <span th:text="${isEdit ? 'Editar Sección' : 'Crear Nueva Sección'}"></span>
+        </h1>
+        <a th:href="@{/admin/secciones}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Listado
+        </a>
+    </header>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"
+                th:text="${isEdit ? 'Formulario de Edición de Sección' : 'Formulario de Registro de Sección'}"></h5>
+        </div>
+        <div class="card-body">
+            <form th:action="${isEdit ? '/admin/secciones/editar/' + seccionRegistroDTO.idSeccion : '/admin/secciones/crear'}"
+                  th:object="${seccionRegistroDTO}" method="post">
+
+                <input type="hidden" th:field="*{idSeccion}" th:if="${isEdit}"/>
+
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger alert-dismissible fade show"
+                     role="alert">
+                    <div th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error global</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="nombreSeccion" class="form-label">Nombre de la Sección <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nombreSeccion" th:field="*{nombreSeccion}"
+                               th:classappend="${#fields.hasErrors('nombreSeccion') ? 'is-invalid' : ''}"
+                               maxlength="10">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nombreSeccion')}"
+                             th:errors="*{nombreSeccion}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="idDocenteTutor" class="form-label">Docente Tutor</label>
+                        <select id="idDocenteTutor" class="form-select" th:field="*{idDocenteTutor}"
+                                th:classappend="${#fields.hasErrors('idDocenteTutor') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un docente --</option>
+                            <option th:each="docente : ${docentes}" th:value="${docente.idDocente}"
+                                    th:text="${docente.persona.nombres + ' ' + docente.persona.apellidos}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idDocenteTutor')}"
+                             th:errors="*{idDocenteTutor}"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="idGrado" class="form-label">Grado <span class="text-danger">*</span></label>
+                        <select id="idGrado" class="form-select" th:field="*{idGrado}"
+                                th:classappend="${#fields.hasErrors('idGrado') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un grado --</option>
+                            <option th:each="grado : ${grados}" th:value="${grado.idGrado}"
+                                    th:text="${grado.nombreGrado}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idGrado')}"
+                             th:errors="*{idGrado}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="idPeriodoAcademico" class="form-label">Período Académico <span
+                                class="text-danger">*</span></label>
+                        <select id="idPeriodoAcademico" class="form-select" th:field="*{idPeriodoAcademico}"
+                                th:classappend="${#fields.hasErrors('idPeriodoAcademico') ? 'is-invalid' : ''}">
+                            <option value="">-- Seleccione un período --</option>
+                            <option th:each="periodo : ${periodosAcademicos}" th:value="${periodo.idPeriodo}"
+                                    th:text="${periodo.nombrePeriodo + ' (' + periodo.anoAcademico + ')'}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idPeriodoAcademico')}"
+                             th:errors="*{idPeriodoAcademico}"></div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="submit" class="btn btn-primary me-md-2">
+                        <i class="bi bi-save me-1"></i>
+                        <span th:text="${isEdit ? 'Guardar Cambios' : 'Registrar Sección'}"></span>
+                    </button>
+                    <a th:href="@{/admin/secciones}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

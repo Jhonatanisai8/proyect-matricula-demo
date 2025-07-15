@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Dashboard de Administrador</title>
+
+    <th:block layout:fragment="styles">
+        <style>
+            .dashboard-card {
+                background-color: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                border: 1px solid #e3e6f0;
+            }
+
+            .dashboard-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+            }
+
+            .dashboard-card .card-body {
+                padding: 2.5rem 2rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                position: relative;
+            }
+
+            .dashboard-card .card-title {
+                font-size: 1.1rem;
+                color: #5a5c69;
+                margin-bottom: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .dashboard-card .card-text {
+                font-size: 3rem;
+                font-weight: 700;
+                margin: 0;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .dashboard-card .card-icon {
+                font-size: 4rem;
+                margin-bottom: 1.5rem;
+                opacity: 0.9;
+            }
+
+            /* Colores específicos para cada tipo de card */
+            .card-total {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
+            .card-total .card-title,
+            .card-total .card-text,
+            .card-total .card-icon {
+                color: white;
+            }
+
+            .card-docente {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
+            }
+
+            .card-docente .card-title,
+            .card-docente .card-text,
+            .card-docente .card-icon {
+                color: white;
+            }
+
+            .card-apoderado {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                color: white;
+            }
+
+            .card-apoderado .card-title,
+            .card-apoderado .card-text,
+            .card-apoderado .card-icon {
+                color: white;
+            }
+
+            .card-estudiante {
+                background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+                color: white;
+            }
+
+            .card-estudiante .card-title,
+            .card-estudiante .card-text,
+            .card-estudiante .card-icon {
+                color: white;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .dashboard-card .card-body {
+                    padding: 2rem 1.5rem;
+                }
+
+                .dashboard-card .card-text {
+                    font-size: 2.5rem;
+                }
+
+                .dashboard-card .card-icon {
+                    font-size: 3rem;
+                }
+            }
+
+            /* Sección de desarrollo */
+            .development-section {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 12px;
+                padding: 3rem;
+                text-align: center;
+                color: white;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            }
+
+            .development-section h4 {
+                font-weight: 300;
+                margin-bottom: 1.5rem;
+                opacity: 0.9;
+            }
+
+            .development-section .gear-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                opacity: 0.7;
+                animation: rotate 10s linear infinite;
+            }
+
+            @keyframes rotate {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<!-- Header específico para el dashboard -->
+<header layout:fragment="header" class="mb-4 pb-3 border-bottom custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-speedometer2 me-2"></i>Dashboard de Administrador
+    </h1>
+    <p class="lead text-muted mb-0">Resumen rápido de la plataforma educativa</p>
+</header>
+
+<!-- Contenido principal del dashboard -->
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+            <div class="col">
+                <div class="card dashboard-card h-100 card-total">
+                    <div class="card-body">
+                        <i class="bi bi-people-fill card-icon"></i>
+                        <h5 class="card-title">Total Usuarios</h5>
+                        <p class="card-text" th:text="${summary != null ? summary.totalUsuarios : '0'}">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card dashboard-card h-100 card-docente">
+                    <div class="card-body">
+                        <i class="bi bi-person-video2 card-icon"></i>
+                        <h5 class="card-title">Total Docentes</h5>
+                        <p class="card-text" th:text="${summary != null ? summary.totalDocentes : '0'}">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card dashboard-card h-100 card-apoderado">
+                    <div class="card-body">
+                        <i class="bi bi-person-check-fill card-icon"></i>
+                        <h5 class="card-title">Total Apoderados</h5>
+                        <p class="card-text" th:text="${summary != null ? summary.totalApoderados : '0'}">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card dashboard-card h-100 card-estudiante">
+                    <div class="card-body">
+                        <i class="bi bi-mortarboard-fill card-icon"></i>
+                        <h5 class="card-title">Total Estudiantes</h5>
+                        <p class="card-text" th:text="${summary != null ? summary.totalEstudiantes : '0'}">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <h4 class="mb-3 text-dark-emphasis">
+                    <i class="bi bi-lightning-charge-fill me-2"></i>Accesos Rápidos
+                </h4>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-person-plus-fill text-primary" style="font-size: 2.5rem;"></i>
+                        <h5 class="card-title mt-3">Registrar Usuario</h5>
+                        <p class="card-text">Agregar nuevos usuarios al sistema</p>
+                        <a th:href="@{/admin/usuarios/nuevo}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Registrar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-clipboard-check-fill text-success" style="font-size: 2.5rem;"></i>
+                        <h5 class="card-title mt-3">Nueva Matrícula</h5>
+                        <p class="card-text">Matricular estudiantes en cursos</p>
+                        <a th:href="@{/admin/matriculas/nueva}" class="btn btn-success">
+                            <i class="bi bi-plus-circle me-1"></i>Matricular
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-file-earmark-bar-graph-fill text-info" style="font-size: 2.5rem;"></i>
+                        <h5 class="card-title mt-3">Ver Reportes</h5>
+                        <p class="card-text">Consultar reportes y estadísticas</p>
+                        <a th:href="@{/admin/reportes}" class="btn btn-info">
+                            <i class="bi bi-graph-up me-1"></i>Ver Reportes
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="development-section">
+            <i class="bi bi-gear-fill gear-icon"></i>
+            <h4>Nuevas funcionalidades en desarrollo</h4>
+            <p class="mb-0">Estamos trabajando en nuevas características para mejorar tu experiencia. ¡Pronto tendrás
+                más herramientas disponibles!</p>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+    <script>
+        // Animación de números contadores
+        document.addEventListener("DOMContentLoaded", function () {
+            const counters = document.querySelectorAll('.card-text');
+
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent);
+                if (!isNaN(target)) {
+                    let count = 0;
+                    const increment = Math.ceil(target / 100);
+
+                    const updateCounter = () => {
+                        if (count < target) {
+                            count += increment;
+                            if (count > target) count = target;
+                            counter.textContent = count;
+                            setTimeout(updateCounter, 20);
+                        }
+                    };
+
+                    // Iniciar animación con un pequeño delay
+                    setTimeout(() => {
+                        counter.textContent = '0';
+                        updateCounter();
+                    }, 300);
+                }
+            });
+        });
+    </script>
+</th:block>
+
+</body>
+</html>

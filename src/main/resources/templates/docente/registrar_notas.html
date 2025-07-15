@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-docente.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Registrar Notas</title>
+    <th:block layout:fragment="styles">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+              integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KenTlPMBOX/I7PmO7NveS/JwSgD7gefdgRz0B+oNcGTyNP8Qy0g=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <style>
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+
+            .btn-action-icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+            }
+
+            .card-header.bg-primary-custom {
+                background-image: linear-gradient(to right, #007bff, #0056b3);
+                border-bottom: 1px solid rgba(0, 0, 0, .125);
+                color: white;
+            }
+
+            .table .form-control-sm {
+                padding: .25rem .5rem;
+                font-size: .875rem;
+                border-radius: .2rem;
+                width: 80px;
+                text-align: center;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <header class="mb-4 d-flex justify-content-between align-items-center">
+            <h1 class="h3 text-primary"><i class="fas fa-pencil-alt me-2"></i> Registrar Notas</h1>
+            <a th:href="@{/docente/dashboard}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Dashboard
+            </a>
+        </header>
+
+        <div id="alertContainer">
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary-custom py-3">
+                <h5 class="mb-0"><i class="fas fa-filter me-2"></i> Seleccionar Curso para Notas</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="cursoNotasSelect" class="form-label font-weight-bold">
+                        Seleccionar Curso Asignado:
+                    </label>
+                    <select id="cursoNotasSelect" class="form-select">
+                        <option value="" disabled selected>-- Seleccione un curso --</option>
+                        <option th:each="curso : ${viewData.cursosParaNotas}"
+                                th:value="${curso.idAsignacion}"
+                                th:data-id-curso="${curso.idCurso}"
+                                th:data-id-grado="${curso.idGrado}"
+                                th:data-id-periodo="${curso.idPeriodoAcademico}"
+                                th:text="${curso.nombreCurso + ' (' + curso.nombreGrado + ' - ' + curso.nombrePeriodoAcademico + ')'}">
+                            Matemáticas (Primer Grado - Ciclo I 2025)
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary-custom py-3">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Estudiantes y Notas</h5>
+            </div>
+            <div class="card-body">
+                <div id="loadingStudentsMessage" class="text-center text-info d-none p-4">
+                    <div class="spinner-border text-info" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-2">Cargando estudiantes...</p>
+                </div>
+
+                <div id="noStudentsForCourseMessage" class="alert alert-info text-center d-none py-4" role="alert">
+                    <p class="lead mb-0"><i class="fas fa-info-circle me-2"></i> No hay estudiantes matriculados en este
+                        curso y período, o el curso no ha sido seleccionado.</p>
+                </div>
+
+                <form id="registroNotasForm">
+                    <input type="hidden" id="selectedAsignacionId" name="idAsignacion" value="">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombres Completos</th>
+                                <th>DNI</th>
+                                <th>Sección</th>
+                                <th>Nota</th>
+                            </tr>
+                            </thead>
+                            <tbody id="estudiantesNotasTableBody">
+                            <!-- Los estudiantes se cargarán aquí vía JavaScript -->
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Seleccione un curso para registrar
+                                    notas.
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" id="guardarNotasBtn" class="btn btn-success btn-lg" disabled>
+                            <i class="fas fa-save me-2"></i> Guardar Notas
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+    <script th:inline="javascript">
+        const apiEstudiantesUrl = /*[[@{/docente/api/notas/estudiantes}]]*/ '/docente/api/notas/estudiantes';
+        const apiRegistrarNotasUrl = /*[[@{/docente/api/notas/registrar}]]*/ '/docente/api/notas/registrar';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const cursoNotasSelect = document.getElementById('cursoNotasSelect');
+            const estudiantesNotasTableBody = document.getElementById('estudiantesNotasTableBody');
+            const loadingStudentsMessage = document.getElementById('loadingStudentsMessage');
+            const noStudentsForCourseMessage = document.getElementById('noStudentsForCourseMessage');
+            const guardarNotasBtn = document.getElementById('guardarNotasBtn');
+            const selectedAsignacionIdInput = document.getElementById('selectedAsignacionId');
+            const registroNotasForm = document.getElementById('registroNotasForm');
+            const alertContainer = document.getElementById('alertContainer');
+
+            function showAlert(message, type) {
+                const alertHtml = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                        <span>${message}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                alertContainer.innerHTML = alertHtml;
+                setTimeout(() => {
+                    const alertElement = alertContainer.querySelector('.alert');
+                    if (alertElement) {
+                        new bootstrap.Alert(alertElement).close();
+                    }
+                }, 5000);
+            }
+
+            async function loadEstudiantesConNotas(idAsignacion) {
+                loadingStudentsMessage.classList.remove('d-none');
+                estudiantesNotasTableBody.innerHTML = '';
+                noStudentsForCourseMessage.classList.add('d-none');
+                guardarNotasBtn.disabled = true;
+                selectedAsignacionIdInput.value = idAsignacion;
+
+                if (!idAsignacion) {
+                    loadingStudentsMessage.classList.add('d-none');
+                    estudiantesNotasTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Seleccione un curso para registrar notas.</td></tr>';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${apiEstudiantesUrl}?idAsignacion=${idAsignacion}`);
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    const estudiantes = await response.json();
+
+                    loadingStudentsMessage.classList.add('d-none');
+
+                    if (estudiantes.length === 0) {
+                        noStudentsForCourseMessage.classList.remove('d-none');
+                    } else {
+                        estudiantes.forEach(estudiante => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${estudiante.codigoEstudiante}</td>
+                                <td>${estudiante.nombresCompletos}</td>
+                                <td>${estudiante.dni}</td>
+                                <td>${estudiante.nombreSeccion}</td>
+                                <td>
+                                    <input type="number" step="0.01" min="0" max="20"
+                                           class="form-control form-control-sm nota-input"
+                                           data-id-estudiante="${estudiante.idEstudiante}"
+                                           data-id-calificacion="${estudiante.idCalificacion || ''}"
+                                           value="${estudiante.notaActual !== null ? estudiante.notaActual : ''}">
+                                </td>
+                            `;
+                            estudiantesNotasTableBody.appendChild(row);
+                        });
+                        guardarNotasBtn.disabled = false;
+                    }
+                } catch (error) {
+                    loadingStudentsMessage.classList.add('d-none');
+                    console.error("Error al cargar los estudiantes para notas:", error);
+                    showAlert("Error al cargar los estudiantes: " + error.message, "danger");
+                    estudiantesNotasTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error al cargar los estudiantes.</td></tr>';
+                }
+            }
+
+            cursoNotasSelect.addEventListener('change', function () {
+                const selectedIdAsignacion = this.value;
+                loadEstudiantesConNotas(selectedIdAsignacion);
+            });
+
+            registroNotasForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                guardarNotasBtn.disabled = true;
+                guardarNotasBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Guardando...';
+
+                const notasParaEnviar = [];
+                document.querySelectorAll('.nota-input').forEach(input => {
+                    const idEstudiante = parseInt(input.dataset.idEstudiante);
+                    const notaValue = input.value.trim();
+                    const idCalificacion = input.dataset.idCalificacion ? parseInt(input.dataset.idCalificacion) : null;
+
+                    if (notaValue !== '') {
+                        notasParaEnviar.push({
+                            idEstudiante: idEstudiante,
+                            nota: parseFloat(notaValue),
+                            idCalificacion: idCalificacion
+                        });
+                    }
+                });
+
+                const requestBody = {
+                    idAsignacion: parseInt(selectedAsignacionIdInput.value),
+                    notas: notasParaEnviar
+                };
+
+                try {
+                    const response = await fetch(apiRegistrarNotasUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    if (response.ok) {
+                        const mensaje = await response.text(); // Espera texto simple
+                        showAlert(mensaje, "success");
+                        // Recargar estudiantes para ver las notas actualizadas (y IDs de calificación)
+                        loadEstudiantesConNotas(selectedAsignacionIdInput.value);
+                    } else {
+                        const errorMessage = await response.text(); // Leer mensaje de error
+                        showAlert(`Error al guardar notas: ${errorMessage}`, "danger");
+                        console.error("Error response:", errorMessage);
+                    }
+                } catch (error) {
+                    console.error("Error al enviar notas:", error);
+                    showAlert("Error de conexión al guardar notas. Intente de nuevo.", "danger");
+                } finally {
+                    guardarNotasBtn.disabled = false;
+                    guardarNotasBtn.innerHTML = '<i class="fas fa-save me-2"></i> Guardar Notas';
+                }
+            });
+
+            if (cursoNotasSelect.options.length > 1) {
+                cursoNotasSelect.value = cursoNotasSelect.options[1].value;
+                loadEstudiantesConNotas(cursoNotasSelect.value);
+            } else {
+                estudiantesNotasTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Seleccione un curso para registrar notas.</td></tr>';
+            }
+        });
+    </script>
+</th:block>
+</body>
+</html>

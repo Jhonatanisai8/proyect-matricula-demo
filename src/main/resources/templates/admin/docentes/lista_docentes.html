@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Listado de Docentes</title>
+
+    <th:block layout:fragment="styles">
+        <style>
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+
+            .status-badge {
+                padding: .4em .6em;
+                border-radius: .25rem;
+                font-size: 0.75em;
+                font-weight: bold;
+            }
+
+            .status-activo {
+                background-color: #d4edda;
+                color: #155724;
+            }
+
+            .status-inactivo {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+
+            .btn-action {
+                margin-right: 5px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i class="bi bi-person-badge-fill me-2"></i>Gestión de Docentes</h1>
+        <a th:href="@{/admin/docentes/crear}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Docente
+        </a>
+    </header>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Listado de Docentes Registrados</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover caption-top">
+                    <caption>Lista de todos los docentes en el sistema.</caption>
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">
+                            <a th:href="@{/admin/docentes(page=${currentPage}, size=${pageSize}, sortBy='persona.dni', sortDir=${sortBy == 'persona.dni' ? reverseSortDir : 'asc'})}">
+                                DNI
+                                <i th:class="${sortBy == 'persona.dni' ? (sortDir == 'asc' ? 'bi bi-sort-down' : 'bi bi-sort-up') : 'bi bi-sort'}"></i>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a th:href="@{/admin/docentes(page=${currentPage}, size=${pageSize}, sortBy='persona.apellidos', sortDir=${sortBy == 'persona.apellidos' ? reverseSortDir : 'asc'})}">
+                                Nombres Completos
+                                <i th:class="${sortBy == 'persona.apellidos' ? (sortDir == 'asc' ? 'bi bi-sort-down' : 'bi bi-sort-up') : 'bi bi-sort'}"></i>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a th:href="@{/admin/docentes(page=${currentPage}, size=${pageSize}, sortBy='codigoDocente', sortDir=${sortBy == 'codigoDocente' ? reverseSortDir : 'asc'})}">
+                                Código Docente
+                                <i th:class="${sortBy == 'codigoDocente' ? (sortDir == 'asc' ? 'bi bi-sort-down' : 'bi bi-sort-up') : 'bi bi-sort'}"></i>
+                            </a>
+                        </th>
+                        <th scope="col">Email Institucional</th>
+                        <th scope="col">Especialidad Principal</th>
+                        <th scope="col">Estado Laboral</th>
+                        <th scope="col">Coordinador</th>
+                        <th scope="col">Estado Usuario</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="docente, iStat : ${docentesPage.content}">
+                        <th scope="row" th:text="${iStat.index + 1 + (currentPage * pageSize)}">1</th>
+                        <td th:text="${docente.dni}">12345678</td>
+                        <td th:text="${docente.nombresCompletos}">Juan Pérez</td>
+                        <td th:text="${docente.codigoDocente}">DOC001</td>
+                        <td th:text="${docente.emailInstitucional}">juan.perez@inst.edu</td>
+                        <td th:text="${docente.especialidadPrincipal}">Matemáticas</td>
+                        <td th:text="${docente.estadoLaboral}">Activo</td>
+                        <td>
+                            <i th:class="${docente.coordinador ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        </td>
+                        <td>
+                            <span th:class="${docente.usuarioActivo ? 'status-badge status-activo' : 'status-badge status-inactivo'}"
+                                  th:text="${docente.usuarioActivo ? 'Activo' : 'Inactivo'}">Activo</span>
+                        </td>
+                        <td>
+                            <a th:href="@{/admin/docentes/{id}(id=${docente.idDocente})}"
+                               class="btn btn-info btn-sm btn-action" title="Ver Detalle">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a th:href="@{/admin/docentes/editar/{id}(id=${docente.idDocente})}"
+                               class="btn btn-warning btn-sm btn-action" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form th:action="@{/admin/docentes/toggle-active/{id}(id=${docente.idDocente}, currentStatus=${docente.usuarioActivo})}"
+                                  method="post" style="display:inline;"
+                                  onsubmit="return confirm('¿Estás seguro de que quieres cambiar el estado de este docente?');">
+                                <button type="submit"
+                                        th:class="${docente.usuarioActivo ? 'btn btn-danger btn-sm btn-action' : 'btn btn-success btn-sm btn-action'}"
+                                        th:title="${docente.usuarioActivo ? 'Desactivar Docente' : 'Activar Docente'}">
+                                    <i th:class="${docente.usuarioActivo ? 'bi bi-toggle-off' : 'bi bi-toggle-on'}"></i>
+                                </button>
+                            </form>
+                            <a th:href="@{/admin/docentes/asignar-cursos/{idDocente}(idDocente=${docente.idDocente})}"
+                               class="btn btn-secondary btn-sm btn-action" title="Asignar Cursos">
+                                <i class="bi bi-journal-check"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <nav aria-label="Paginación de docentes">
+                <ul class="pagination justify-content-center mt-3">
+                    <li class="page-item" th:classappend="${docentesPage.first ? 'disabled' : ''}">
+                        <a class="page-link"
+                           th:href="@{/admin/docentes(page=${currentPage - 1}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                           tabindex="-1" aria-disabled="true">Anterior</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, docentesPage.totalPages - 1)}"
+                        th:classappend="${i == currentPage ? 'active' : ''}">
+                        <a class="page-link"
+                           th:href="@{/admin/docentes(page=${i}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                           th:text="${i + 1}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${docentesPage.last ? 'disabled' : ''}">
+                        <a class="page-link"
+                           th:href="@{/admin/docentes(page=${currentPage + 1}, size=${pageSize}, sortBy=${sortBy}, sortDir=${sortDir})}">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="text-center text-muted mt-2">
+                Mostrando <span th:text="${docentesPage.numberOfElements}"></span> de <span
+                    th:text="${docentesPage.totalElements}"></span> docentes. Página <span
+                    th:text="${currentPage + 1}"></span> de <span th:text="${docentesPage.totalPages}"></span>.
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+</th:block>
+</body>
+</html>

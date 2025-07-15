@@ -1,0 +1,95 @@
+.header {
+    background: linear-gradient(rgba(29, 30, 35, 0.8),
+            rgba(29, 30, 35, 0.8)), url('/imgs/fondo.png');
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    min-height: 80vh;
+    padding: 80px 0 0 0;
+}
+
+.menu {
+    /* border: solid 5px black; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    /* border: solid 5px wheat; */
+    font-size: 25px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #0056b3;
+}
+
+.menu .nabvar ul li {
+    /* border: solid 1px black; */
+    position: relative;
+    float: left;
+}
+
+.menu .nabvar ul li a {
+    font-size: 18px;
+    padding: 20px;
+    color: #FFFFFC;
+    display: block;
+    font-weight: 600;
+}
+
+.menu .nabvar ul li a:hover {
+    color: #757780;
+}
+
+#menu {
+    display: none;
+}
+
+.menu-icono {
+    width: 25px;
+}
+
+.menu label {
+    cursor: pointer;
+    display: none;
+}
+
+.header-txt {
+    /* border: solid 5px black; */
+    padding: 0 200px;
+}
+
+.header-txt h1 {
+    font-size: 70px;
+    line-height: 1;
+    color: #FFFFFC;
+    font-family: "Bebas Neue", sans-serif;
+    margin-bottom: 20px;
+}
+
+p {
+    color: #FFFFFC;
+    font-size: 17px;
+    margin-bottom: 35px;
+}
+
+.btn-1 {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-1:hover {
+    background-color: #0056b3;
+    color: #e6e6e6;
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title" th:text="${'Detalles del Período: ' + periodo.nombrePeriodo}"></title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-calendar-check-fill me-2"></i>Detalles del Período Académico
+    </h1>
+    <p class="lead text-muted mb-0" th:text="${'Información completa del período: ' + periodo.nombrePeriodo}"></p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"
+                    th:text="${'Información de ' + periodo.nombrePeriodo}"></h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>ID del Período:</strong> <span th:text="${periodo.idPeriodo}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Nombre del Período:</strong> <span th:text="${periodo.nombrePeriodo}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Año Académico:</strong> <span th:text="${periodo.anoAcademico}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Estado:</strong> <span th:text="${periodo.estado}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Fecha de Inicio:</strong> <span
+                            th:text="${#temporals.format(periodo.fechaInicio, 'dd/MM/yyyy')}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Fecha de Fin:</strong> <span
+                            th:text="${#temporals.format(periodo.fechaFin, 'dd/MM/yyyy')}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Activo:</strong>
+                        <i th:class="${periodo.activo ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        <span th:text="${periodo.activo ? 'Sí' : 'No'}"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-start mt-4">
+                    <a th:href="@{/admin/periodos}" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Volver al Listado
+                    </a>
+                    <a th:href="@{/admin/periodos/editar/{id}(id=${periodo.idPeriodo})}" class="btn btn-warning">
+                        <i class="bi bi-pencil me-1"></i> Editar Período
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

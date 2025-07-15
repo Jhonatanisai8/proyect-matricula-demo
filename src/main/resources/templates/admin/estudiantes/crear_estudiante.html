@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title"
+           th:text="${estudiante.idEstudiante == null ? 'Registrar Nuevo Estudiante' : 'Editar Estudiante'}"></title>
+</head>
+<body>
+
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <h2 class="mb-4 text-primary"
+            th:text="${estudiante.idEstudiante == null ? 'Registrar Nuevo Estudiante' : 'Editar Estudiante'}"></h2>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <form th:action="@{/admin/estudiantes/guardar}" th:object="${estudiante}" method="post"
+              class="needs-validation" novalidate enctype="multipart/form-data">
+            <div th:if="${#fields.hasErrors('global')}" class="alert alert-danger alert-dismissible fade show"
+                 role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span th:each="err : ${#fields.errors('global')}" th:text="${err}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <input type="hidden" th:field="*{idEstudiante}"/>
+            <input type="hidden" th:field="*{idPersona}"/>
+            <input type="hidden" th:field="*{personaActivo}"/>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i> Datos Personales</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-12 mb-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-6 order-md-2 text-center mb-3 mb-md-0">
+                                    <div class="mb-2">
+                                        <label class="form-label d-block">Foto de Perfil Actual:</label>
+                                        <div th:if="${estudiante.fotoUrl != null and !estudiante.fotoUrl.isEmpty()}">
+                                            <img th:src="@{/assets/{filename}(filename=${estudiante.fotoUrl})}"
+                                                 alt="Foto actual de perfil"
+                                                 class="img-fluid rounded-circle border border-3 border-info shadow-sm"
+                                                 style="width: 150px; height: 150px; object-fit: cover;">
+                                        </div>
+                                        <div th:unless="${estudiante.fotoUrl != null and !estudiante.fotoUrl.isEmpty()}"
+                                             class="text-muted small">
+                                            <i class="fas fa-image fa-5x text-secondary"></i>
+                                            <p class="mt-2">No hay foto cargada.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 order-md-1">
+                                    <label for="foto" class="form-label">Subir Nueva Foto:</label>
+                                    <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                                    <div class="form-text text-muted small mt-1">Sube una imagen para el estudiante. Se
+                                        reemplazará la foto actual si existe.
+                                    </div>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('foto')}"
+                                         th:errors="*{foto}"></div>
+                                </div>
+                            </div>
+                            <hr class="mt-4 mb-4">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="nombres" class="form-label">Nombres <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombres" th:field="*{nombres}" required
+                                   aria-describedby="nombresFeedback"/>
+                            <div class="invalid-feedback" id="nombresFeedback" th:if="${#fields.hasErrors('nombres')}"
+                                 th:errors="*{nombres}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="apellidos" class="form-label">Apellidos <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}" required
+                                   aria-describedby="apellidosFeedback"/>
+                            <div class="invalid-feedback" id="apellidosFeedback"
+                                 th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="dni" class="form-label">DNI <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="dni" th:field="*{dni}" required
+                                   pattern="\d{8}" title="Debe contener 8 dígitos" aria-describedby="dniFeedback"/>
+                            <div class="invalid-feedback" id="dniFeedback" th:if="${#fields.hasErrors('dni')}"
+                                 th:errors="*{dni}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="fechaNacimiento" class="form-label">Fecha Nacimiento <span
+                                    class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}"
+                                   required max="2018-12-31" min="1950-01-01"
+                                   aria-describedby="fechaNacimientoFeedback"/>
+                            <div class="invalid-feedback" id="fechaNacimientoFeedback"
+                                 th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="genero" class="form-label">Género <span class="text-danger">*</span></label>
+                            <select id="genero" class="form-select" th:field="*{genero}" required
+                                    aria-describedby="generoFeedback">
+                                <option value="">Seleccione...</option>
+                                <option th:each="generoEntry : ${generos}"
+                                        th:value="${generoEntry.key}"
+                                        th:text="${generoEntry.value}">Masculino
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" id="generoFeedback" th:if="${#fields.hasErrors('genero')}"
+                                 th:errors="*{genero}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="estadoCivil" class="form-label">Estado Civil <span class="text-danger">*</span></label>
+                            <select id="estadoCivil" class="form-select" th:field="*{estadoCivil}" required
+                                    aria-describedby="estadoCivilFeedback">
+                                <option value="">Seleccione...</option>
+                                <option th:each="estadoEntry : ${estadosCiviles}"
+                                        th:value="${estadoEntry.key}"
+                                        th:text="${estadoEntry.value}">Soltero(a)
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" id="estadoCivilFeedback"
+                                 th:if="${#fields.hasErrors('estadoCivil')}" th:errors="*{estadoCivil}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="emailPersonal" class="form-label">Email Personal <span
+                                    class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="emailPersonal" th:field="*{emailPersonal}"
+                                   required aria-describedby="emailPersonalFeedback"/>
+                            <div class="invalid-feedback" id="emailPersonalFeedback"
+                                 th:if="${#fields.hasErrors('emailPersonal')}" th:errors="*{emailPersonal}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="telefono" th:field="*{telefono}" required
+                                   pattern="\d{9}" title="Debe contener 9 dígitos" aria-describedby="telefonoFeedback"/>
+                            <div class="invalid-feedback" id="telefonoFeedback" th:if="${#fields.hasErrors('telefono')}"
+                                 th:errors="*{telefono}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="direccion" class="form-label">Dirección <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="direccion" th:field="*{direccion}" required
+                                   aria-describedby="direccionFeedback"/>
+                            <div class="invalid-feedback" id="direccionFeedback"
+                                 th:if="${#fields.hasErrors('direccion')}"
+                                 th:errors="*{direccion}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tipoDocumento" class="form-label">Tipo Documento <span
+                                    class="text-danger">*</span></label>
+                            <select id="tipoDocumento" class="form-select" th:field="*{tipoDocumento}" required
+                                    aria-describedby="tipoDocumentoFeedback">
+                                <option value="">Seleccione...</option>
+                                <option th:each="tipoEntry : ${tiposDocumento}"
+                                        th:value="${tipoEntry.key}"
+                                        th:text="${tipoEntry.value}">DNI
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" id="tipoDocumentoFeedback"
+                                 th:if="${#fields.hasErrors('tipoDocumento')}" th:errors="*{tipoDocumento}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i> Datos Académicos y Otros</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="codigoEstudiante" class="form-label">Código Estudiante</label>
+                            <input type="text" class="form-control btn btn-primary" id="codigoEstudiante"
+                                   th:field="*{codigoEstudiante} " style="color: #0b5ed7"
+                                   th:attrappend="readonly=${estudiante.idEstudiante != null ? true : false}"
+                                   th:title="${estudiante.idEstudiante != null ? 'El código se genera automáticamente o no se puede modificar al editar.' : ''}"
+                                   aria-describedby="codigoEstudianteHelp codigoEstudianteFeedback"
+                                   placeholder="Se genera automaticamente."/>
+                            <div class="form-text" id="codigoEstudianteHelp">Se generará automáticamente si se deja
+                                vacío al crear.
+                            </div>
+                            <div class="invalid-feedback" id="codigoEstudianteFeedback"
+                                 th:if="${#fields.hasErrors('codigoEstudiante')}" th:errors="*{codigoEstudiante}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="emailEducativo" class="form-label">Email Educativo</label>
+                            <input type="email" class="form-control" id="emailEducativo" th:field="*{emailEducativo}"
+                                   aria-describedby="emailEducativoFeedback"/>
+                            <div class="invalid-feedback" id="emailEducativoFeedback"
+                                 th:if="${#fields.hasErrors('emailEducativo')}" th:errors="*{emailEducativo}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="institucionProcedencia" class="form-label">Institución de Procedencia</label>
+                            <input type="text" class="form-control" id="institucionProcedencia"
+                                   th:field="*{institucionProcedencia}"
+                                   aria-describedby="institucionProcedenciaFeedback"/>
+                            <div class="invalid-feedback" id="institucionProcedenciaFeedback"
+                                 th:if="${#fields.hasErrors('institucionProcedencia')}"
+                                 th:errors="*{institucionProcedencia}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="gradoAnterior" class="form-label">Último Grado Cursado</label>
+                            <select id="gradoAnterior" class="form-select" th:field="*{gradoAnterior}"
+                                    aria-describedby="gradoAnteriorFeedback">
+                                <option value="">Seleccione...</option>
+                                <option th:each="gradoAntEntry : ${gradosAnteriores}"
+                                        th:value="${gradoAntEntry.key}"
+                                        th:text="${gradoAntEntry.value}">1° Primaria
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" id="gradoAnteriorFeedback"
+                                 th:if="${#fields.hasErrors('gradoAnterior')}" th:errors="*{gradoAnterior}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="idApoderado" class="form-label">Apoderado Principal</label>
+                            <select id="idApoderado" class="form-select" th:field="*{idApoderado}"
+                                    aria-describedby="idApoderadoHelp idApoderadoFeedback">
+                                <option value="">Ninguno</option>
+                                <option th:each="apoderado : ${apoderados}"
+                                        th:value="${apoderado.id}"
+                                        th:text="${apoderado.nombreCompleto}">Nombre Apoderado
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" id="idApoderadoFeedback"
+                                 th:if="${#fields.hasErrors('idApoderado')}" th:errors="*{idApoderado}"></div>
+                            <div class="form-text" id="idApoderadoHelp">Si el apoderado no existe, debe crearlo
+                                primero.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i> Información Médica y Emergencia</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="tipoSangre" class="form-label">Tipo de Sangre</label>
+                            <select id="tipoSangre" class="form-select" th:field="*{tipoSangre}"
+                                    aria-describedby="tipoSangreFeedback">
+                                <option value="">Seleccione...</option>
+                                <option th:each="tipoSangreEntry : ${tiposSangre}"
+                                        th:value="${tipoSangreEntry.key}"
+                                        th:text="${tipoSangreEntry.value}">O+
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" id="tipoSangreFeedback"
+                                 th:if="${#fields.hasErrors('tipoSangre')}" th:errors="*{tipoSangre}"></div>
+                        </div>
+
+                        <!--                        <div class="col-md-8">-->
+                        <!--                            <label for="seguroEscolar" class="form-label">Seguro Escolar</label>-->
+                        <!--                            <input type="text" class="form-control" id="seguroEscolar" th:field="*{seguroEscolar}"-->
+                        <!--                                   aria-describedby="seguroEscolarFeedback"/>-->
+                        <!--                            <div class="invalid-feedback" id="seguroEscolarFeedback"-->
+                        <!--                                 th:if="${#fields.hasErrors('seguroEscolar')}" th:errors="*{seguroEscolar}"></div>-->
+                        <!--                        </div>-->
+
+                        <div class="col-md-4 mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="seguroEscolar"
+                                   th:field="*{seguroEscolar}">
+                            <label class="form-check-label" for="seguroEscolar">Seguro Escolar:</label>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('seguroEscolar')}"
+                                 th:errors="*{seguroEscolar}"></div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="alergias" class="form-label">Alergias</label>
+                            <textarea class="form-control" id="alergias" th:field="*{alergias}" rows="2"
+                                      aria-describedby="alergiasFeedback"></textarea>
+                            <div class="invalid-feedback" id="alergiasFeedback"
+                                 th:if="${#fields.hasErrors('alergias')}" th:errors="*{alergias}"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="observacionesMedicas" class="form-label">Observaciones Médicas</label>
+                            <textarea class="form-control" id="observacionesMedicas" th:field="*{observacionesMedicas}"
+                                      rows="2" aria-describedby="observacionesMedicasFeedback"></textarea>
+                            <div class="invalid-feedback" id="observacionesMedicasFeedback"
+                                 th:if="${#fields.hasErrors('observacionesMedicas')}"
+                                 th:errors="*{observacionesMedicas}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contactoEmergencia" class="form-label">Contacto de Emergencia <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="contactoEmergencia"
+                                   th:field="*{contactoEmergencia}" required
+                                   aria-describedby="contactoEmergenciaFeedback"/>
+                            <div class="invalid-feedback" id="contactoEmergenciaFeedback"
+                                 th:if="${#fields.hasErrors('contactoEmergencia')}"
+                                 th:errors="*{contactoEmergencia}"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefonoEmergencia" class="form-label">Teléfono de Emergencia <span
+                                    class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="telefonoEmergencia"
+                                   th:field="*{telefonoEmergencia}" required pattern="\d{9}"
+                                   title="Debe contener 9 dígitos" aria-describedby="telefonoEmergenciaFeedback"/>
+                            <div class="invalid-feedback" id="telefonoEmergenciaFeedback"
+                                 th:if="${#fields.hasErrors('telefonoEmergencia')}"
+                                 th:errors="*{telefonoEmergencia}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mb-4">
+                <a th:href="@{/admin/estudiantes/lista}" class="btn btn-secondary me-2">
+                    <i class="fas fa-times-circle me-2"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i> <span
+                        th:text="${estudiante.idEstudiante == null ? 'Guardar Estudiante' : 'Actualizar Estudiante'}"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+    <script>
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</th:block>
+</body>
+</html>

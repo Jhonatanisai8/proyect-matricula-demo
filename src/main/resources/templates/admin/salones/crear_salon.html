@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title" th:text="${isEdit ? 'Editar Salón' : 'Registrar Salón'}"></title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-building-fill-add me-2"></i><span
+            th:text="${isEdit ? 'Editar Salón' : 'Registrar Nuevo Salón'}"></span>
+    </h1>
+    <p class="lead text-muted mb-0"
+       th:text="${isEdit ? 'Modifica los datos del salón existente.' : 'Ingresa la información para registrar un nuevo salón.'}"></p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"
+                    th:text="${isEdit ? 'Formulario de Edición' : 'Formulario de Registro'}"></h6>
+            </div>
+            <div class="card-body">
+                <!--                <form th:action="${docenteRegistroDTO.idDocente != null ? '/admin/docentes/editar/' + docenteRegistroDTO.idDocente : '/admin/docentes/crear'}"-->
+                <!--                      th:object="${docenteRegistroDTO}" method="post" enctype="multipart/form-data">-->
+
+                <form th:action="${salonDTO.idSalon != null ? '/admin/salones/editar/' + salonDTO.idSalon : '/admin/salones/guardar'}"
+                      th:object="${salonDTO}" method="post">
+                    <!--                    <input type="hidden" th:field="*{idPersona}" th:if="${docenteRegistroDTO.idPersona != null}"/>-->
+
+                    <input type="hidden" th:field="*{idSalon}" th:value="${salonDTO.idSalon}"/>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="codigoSalon" class="form-label">Código del Salón:</label>
+                            <input type="text" class="form-control" id="codigoSalon" th:field="*{codigoSalon}"
+                                   th:classappend="${#fields.hasErrors('codigoSalon') ? 'is-invalid' : ''}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('codigoSalon')}"
+                                 th:errors="*{codigoSalon}"></div>
+                            <div class="form-text text-muted small">Ej: "AULA-001", "LAB-FIS-02"</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="nombreSalon" class="form-label">Nombre del Salón:</label>
+                            <input type="text" class="form-control" id="nombreSalon" th:field="*{nombreSalon}"
+                                   th:classappend="${#fields.hasErrors('nombreSalon') ? 'is-invalid' : ''}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombreSalon')}"
+                                 th:errors="*{nombreSalon}"></div>
+                            <div class="form-text text-muted small">Ej: "Aula de Matemáticas", "Laboratorio de
+                                Ciencias"
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="capacidadMaxima" class="form-label">Capacidad Máxima:</label>
+                            <input type="number" class="form-control" id="capacidadMaxima" th:field="*{capacidadMaxima}"
+                                   th:classappend="${#fields.hasErrors('capacidadMaxima') ? 'is-invalid' : ''}" min="1"
+                                   required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('capacidadMaxima')}"
+                                 th:errors="*{capacidadMaxima}"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="ubicacion" class="form-label">Ubicación:</label>
+                            <input type="text" class="form-control" id="ubicacion" th:field="*{ubicacion}"
+                                   th:classappend="${#fields.hasErrors('ubicacion') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('ubicacion')}"
+                                 th:errors="*{ubicacion}"></div>
+                            <div class="form-text text-muted small">Ej: "Pabellón A", "Edificio Principal"</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="piso" class="form-label">Piso:</label>
+                            <input type="text" class="form-control" id="piso" th:field="*{piso}"
+                                   th:classappend="${#fields.hasErrors('piso') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('piso')}"
+                                 th:errors="*{piso}"></div>
+                            <div class="form-text text-muted small">Ej: "1er Piso", "Planta Baja"</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción:</label>
+                        <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3"
+                                  th:classappend="${#fields.hasErrors('descripcion') ? 'is-invalid' : ''}"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}"
+                             th:errors="*{descripcion}"></div>
+                        <div class="form-text text-muted small">Información adicional sobre el salón.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="recursosDisponibles" class="form-label">Recursos Disponibles:</label>
+                        <textarea class="form-control" id="recursosDisponibles" th:field="*{recursosDisponibles}"
+                                  rows="2"
+                                  th:classappend="${#fields.hasErrors('recursosDisponibles') ? 'is-invalid' : ''}"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('recursosDisponibles')}"
+                             th:errors="*{recursosDisponibles}"></div>
+                        <div class="form-text text-muted small">Ej: "Proyector HDMI, Pizarra interactiva, 20
+                            computadoras"
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="tieneProyector"
+                                   th:field="*{tieneProyector}">
+                            <label class="form-check-label" for="tieneProyector">Tiene Proyector</label>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('tieneProyector')}"
+                                 th:errors="*{tieneProyector}"></div>
+                        </div>
+                        <div class="col-md-4 mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="tieneAireAcondicionado"
+                                   th:field="*{tieneAireAcondicionado}">
+                            <label class="form-check-label" for="tieneAireAcondicionado">Tiene Aire
+                                Acondicionado</label>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('tieneAireAcondicionado')}"
+                                 th:errors="*{tieneAireAcondicionado}"></div>
+                        </div>
+                        <div class="col-md-4 mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="activo" th:field="*{activo}">
+                            <label class="form-check-label" for="activo">Activo (Disponible)</label>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('activo')}"
+                                 th:errors="*{activo}"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a th:href="@{/admin/salones}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i> <span
+                                th:text="${isEdit ? 'Actualizar' : 'Registrar'}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

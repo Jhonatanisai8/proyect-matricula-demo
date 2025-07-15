@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title" th:text="${isEdit ? 'Editar Grado' : 'Registrar Grado'}"></title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-mortarboard-fill me-2"></i><span
+            th:text="${isEdit ? 'Editar Grado' : 'Registrar Nuevo Grado'}"></span>
+    </h1>
+    <p class="lead text-muted mb-0"
+       th:text="${isEdit ? 'Modifica los datos del grado existente.' : 'Ingresa la información para registrar un nuevo grado.'}"></p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"
+                    th:text="${isEdit ? 'Formulario de Edición de Grado' : 'Formulario de Registro de Grado'}"></h6>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/grados/guardar}" th:object="${gradoDTO}" method="post">
+                    <input type="hidden" th:field="*{idGrado}"/>
+                    <input type="hidden" th:field="*{codigoGrado}"/>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="nombreGrado" class="form-label">Nombre del Grado:</label>
+                            <input type="text" class="form-control" id="nombreGrado" th:field="*{nombreGrado}"
+                                   th:classappend="${#fields.hasErrors('nombreGrado') ? 'is-invalid' : ''}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombreGrado')}"
+                                 th:errors="*{nombreGrado}"></div>
+                            <div class="form-text text-muted small">Ej. Primero de Primaria, Inicial 3 años.</div>
+                        </div>
+
+                        <!--                        <div class="col-md-6 mb-3">-->
+                        <!--                            <label for="codigoGrado" class="form-label">Código del Grado:</label>-->
+                        <!--                            <input type="text" class="form-control" id="codigoGrado" th:field="*{codigoGrado}"-->
+                        <!--                                   th:classappend="${#fields.hasErrors('codigoGrado') ? 'is-invalid' : ''}" required>-->
+                        <!--                            <div class="invalid-feedback" th:if="${#fields.hasErrors('codigoGrado')}"-->
+                        <!--                                 th:errors="*{codigoGrado}"></div>-->
+                        <!--                            <div class="form-text text-muted small">Código único para identificar el grado (ej. PRIM1,-->
+                        <!--                                INI3).-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="nivel" class="form-label">Nivel Educativo:</label>
+                            <input type="number" class="form-control" id="nivel" th:field="*{nivel}"
+                                   th:classappend="${#fields.hasErrors('nivel') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nivel')}"
+                                 th:errors="*{nivel}"></div>
+                            <div class="form-text text-muted small">Ej. 1 para Inicial, 2 para Primaria, etc.</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="edadMinima" class="form-label">Edad Mínima:</label>
+                            <input type="number" class="form-control" id="edadMinima" th:field="*{edadMinima}"
+                                   th:classappend="${#fields.hasErrors('edadMinima') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('edadMinima')}"
+                                 th:errors="*{edadMinima}"></div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="edadMaxima" class="form-label">Edad Máxima:</label>
+                            <input type="number" class="form-control" id="edadMaxima" th:field="*{edadMaxima}"
+                                   th:classappend="${#fields.hasErrors('edadMaxima') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('edadMaxima')}"
+                                 th:errors="*{edadMaxima}"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="cuposDisponibles" class="form-label">Cupos Disponibles:</label>
+                            <input type="number" class="form-control" id="cuposDisponibles"
+                                   th:field="*{cuposDisponibles}"
+                                   th:classappend="${#fields.hasErrors('cuposDisponibles') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('cuposDisponibles')}"
+                                 th:errors="*{cuposDisponibles}"></div>
+                        </div>
+
+                        <!--                                                <div class="col-md-4 mb-3">-->
+                        <!--                                                    <label for="pensionMensual" class="form-label">Pensión Mensual:</label>-->
+                        <!--                                                    <input type="number" step="0.01" class="form-control" id="pensionMensual"-->
+                        <!--                                                           th:field="*{pensionMensual}"-->
+                        <!--                                                           th:classappend="${#fields.hasErrors('pensionMensual') ? 'is-invalid' : ''}">-->
+                        <!--                                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('pensionMensual')}"-->
+                        <!--                                                         th:errors="*{pensionMensual}"></div>-->
+                        <!--                                                </div>-->
+                        <!--                        -->
+
+                        <div class="col-md-4 mb-3">
+                            <label for="orden" class="form-label">Orden (para listados):</label>
+                            <input type="number" class="form-control" id="orden" th:field="*{orden}"
+                                   th:classappend="${#fields.hasErrors('orden') ? 'is-invalid' : ''}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('orden')}"
+                                 th:errors="*{orden}"></div>
+                            <div class="form-text text-muted small">Ej. 1 para 1er grado, 2 para 2do.</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción:</label>
+                        <textarea class="form-control" id="descripcion" rows="3" th:field="*{descripcion}"
+                                  th:classappend="${#fields.hasErrors('descripcion') ? 'is-invalid' : ''}"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}"
+                             th:errors="*{descripcion}"></div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="activo" th:field="*{activo}">
+                        <label class="form-check-label" for="activo">Activo (Habilitado)</label>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('activo')}"
+                             th:errors="*{activo}"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a th:href="@{/admin/grados}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i> <span
+                                th:text="${isEdit ? 'Actualizar Grado' : 'Registrar Grado'}"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

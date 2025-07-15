@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Detalle de Estudiante</title>
+</head>
+<body>
+
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">Detalle de Estudiante <span th:text="${estudiante.nombres}"></span></h2>
+            <div>
+                <a th:href="@{/admin/estudiantes/lista}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Volver a la Lista
+                </a>
+                <a th:href="@{/admin/estudiantes/editar/{id}(id=${estudiante.idEstudiante})}"
+                   class="btn btn-warning ms-2">
+                    <i class="fas fa-edit me-2"></i> Editar Estudiante
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Información General</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <strong>Código Estudiante:</strong> <span th:text="${estudiante.codigoEstudiante}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>DNI:</strong> <span th:text="${estudiante.dni}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Nombre Completo:</strong> <span th:text="${estudiante.nombres}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Fecha Nacimiento:</strong> <span
+                            th:text="${#temporals.format(estudiante.fechaNacimiento, 'dd/MM/yyyy')}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Género:</strong> <span th:text="${estudiante.genero}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Estado Civil:</strong> <span th:text="${estudiante.estadoCivil}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Email Personal:</strong> <span th:text="${estudiante.emailPersonal}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Email Educativo:</strong> <span th:text="${estudiante.emailEducativo ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Teléfono:</strong> <span th:text="${estudiante.telefono}"></span>
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        <strong>Dirección:</strong> <span th:text="${estudiante.direccion}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Tipo Documento:</strong> <span th:text="${estudiante.tipoDocumento}"></span>
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        <strong>Institución de Procedencia:</strong> <span
+                            th:text="${estudiante.institucionProcedencia ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Grado Anterior:</strong> <span th:text="${estudiante.gradoAnterior ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Estado:</strong>
+                        <span th:classappend="${estudiante.personaActivo} ? 'badge bg-success' : 'badge bg-danger'"
+                              th:text="${estudiante.personaActivo} ? 'Activo' : 'Inactivo'"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-user-shield me-2"></i> Información del Apoderado Principal</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${estudiante.idApoderadoPrincipal != null}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Nombre Apoderado:</strong> <span
+                                th:text="${estudiante.apoderadoNombresCompletos}"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Parentesco:</strong> <span th:text="${estudiante.apoderadoParentesco}"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Teléfono Contacto:</strong> <span
+                                th:text="${estudiante.apoderadoTelefonoContacto}"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Email Apoderado:</strong> <span
+                                th:text="${estudiante.apoderadoEmailPersonal}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div th:unless="${estudiante.idApoderadoPrincipal != null}" class="alert alert-warning text-center">
+                    No hay un apoderado principal asignado a este estudiante.
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-first-aid me-2"></i> Información Médica</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong>Tipo de Sangre:</strong> <span th:text="${estudiante.tipoSangre ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Seguro Escolar:</strong> <span th:text="${estudiante.seguroEscolar ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Alergias:</strong> <span th:text="${estudiante.alergias ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Observaciones Médicas:</strong> <span
+                            th:text="${estudiante.observacionesMedicas ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Contacto de Emergencia:</strong> <span
+                            th:text="${estudiante.contactoEmergencia ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Teléfono de Emergencia:</strong> <span
+                            th:text="${estudiante.telefonoEmergencia ?: 'N/A'}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i> Información de Matrícula Actual</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${estudiante.idMatriculaActual != null}">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <strong>N° Matrícula:</strong> <span th:text="${estudiante.numeroMatriculaActual}"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Fecha Matrícula:</strong> <span
+                                th:text="${#temporals.format(estudiante.fechaMatriculaActual, 'dd/MM/yyyy')}"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Estado Matrícula:</strong> <span
+                                th:text="${estudiante.estadoMatriculaActual}"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Período Académico:</strong> <span
+                                th:text="${estudiante.periodoAcademicoMatriculado}"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Grado Matriculado:</strong> <span th:text="${estudiante.gradoMatriculado}"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Sección Matriculada:</strong> <span
+                                th:text="${estudiante.seccionMatriculada}"></span>
+                        </div>
+                    </div>
+                </div>
+                <div th:unless="${estudiante.idMatriculaActual != null}" class="alert alert-info text-center">
+                    Este estudiante no tiene una matrícula registrada para el período actual.
+                    <a th:href="@{/admin/estudiantes/matricula/{id}(id=${estudiante.idEstudiante})}"
+                       class="btn btn-sm btn-info ms-2">
+                        <i class="fas fa-plus-circle me-1"></i> Realizar Matrícula
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+</th:block>
+</body>
+</html>

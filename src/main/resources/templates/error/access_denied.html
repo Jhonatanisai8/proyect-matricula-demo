@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-auth.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title">Acceso Denegado</title>
+</head>
+<body>
+<section layout:fragment="content" class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="container text-center">
+        <div class="card shadow-lg p-5 rounded-3">
+            <h1 class="display-1 text-danger mb-4"><i class="bi bi-lock-fill"></i> 403</h1>
+            <h2 class="mb-3">Acceso Denegado</h2>
+            <p class="lead text-muted">No tienes los permisos necesarios para acceder a esta página.</p>
+            <hr class="my-4">
+            <p>Por favor, contacta al administrador del sistema si crees que esto es un error.</p>
+            <a th:href="@{/login}" class="btn btn-primary mt-3">Volver al inicio de sesión</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

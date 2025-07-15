@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> I.E. Nivel primaria “Luz del Saber”</title>
+    <!--    <link rel="stylesheet" href="styleGenerales.css">-->
+    <!--    <link rel="stylesheet" href="style-header.css">-->
+    <!--    <link rel="stylesheet" href="style-about.css">-->
+    <!--    <link rel="stylesheet" href="style-testimonial.css">-->
+    <!--    <link rel="stylesheet" href="style-information.css">-->
+    <!--    <link rel="stylesheet" href="style-blog.css">-->
+    <!--    <link rel="stylesheet" href="style-contac.css">-->
+    <!--    <link rel="stylesheet" href="style-footer.css">-->
+    <!--    <link rel="stylesheet" href="style-response.css">-->
+    <link th:href="@{/css/styleGenerales.css}" rel="stylesheet">
+    <link th:href="@{/css/style-header.css}" rel="stylesheet">
+    <link th:href="@{/css/style-about.css}" rel="stylesheet">
+    <link th:href="@{/css/style-testimonial.css}" rel="stylesheet">
+    <link th:href="@{/css/style-information.css}" rel="stylesheet">
+    <link th:href="@{/css/style-blog.css}" rel="stylesheet">
+    <link th:href="@{/css/style-contac.css}" rel="stylesheet">
+    <link th:href="@{/css/style-footer.css}" rel="stylesheet">
+    <link th:href="@{/css/style-response.css}" rel="stylesheet">
+
+
+</head>
+
+<body>
+<header class="header">
+    <div class="menu container">
+        <a class="logo" href="#">LOGO</a>
+        <input type="checkbox" name="menu" id="menu">
+        <label for="menu">
+            <img class="menu-icono" th:src="@{imgs/menu.png}" alt="Menu Icono">
+        </label>
+        <nav class="nabvar">
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#inicio" th:href="@{/login}">Login</a></li>
+                <li><a href="#inicio">Nosotros</a></li>
+                <li><a href="#inicio">Niveles Educativos</a></li>
+                <li><a href="#inicio">Contacto </a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container header-content">
+        <div class="header-txt">
+            <h1>I.E. nivel primaria “Luz del Saber”</h1>
+            <p>
+                En "Luz del Saber", cultivamos valores, creatividad y excelencia académica en un ambiente seguro e
+                inclusivo.
+            </p>
+            <a href="#" class="btn-1">Mas Informacion</a>
+        </div>
+    </div>
+</header>
+
+<section class="about">
+    <div class="about-content container">
+        <div class="about-txt">
+            <span>I.E. nivel primaria “Luz del Saber”</span>
+            <h2>Bienvenido con nosotros.</h2>
+            <hr>
+            <p>
+                En la <strong>Institución Educativa "Luz del Saber"</strong> de Puente Piedra,
+                iluminamos el futuro de sus hijos con <strong>educación de calidad, valores
+                humanos y tecnología</strong>. Nuestro compromiso es formar <strong>niños
+                felices, creativos y líderes</strong> en un ambiente seguro e inclusivo,
+                donde cada día aprenden, juegan y crecen con pasión.
+            </p>
+
+            <p>
+                Ademas , encendemos la chispa de la curiosidad en cada niño.
+                Nuestro enfoque va más allá de las aulas: cultivamos <strong>creatividad,
+                confianza y amor por el conocimiento</strong> a través de experiencias
+                prácticas, tecnología educativa y un equipo docente que inspira.
+                ¡Juntos construimos los cimientos de un futuro lleno de oportunidades!
+            </p>
+        </div>
+
+        <div class="about-img">
+            <img th:src="@{/imgs/menu.png}" alt="Imagen de Niños">
+        </div>
+    </div>
+</section>
+
+<section class="testimonial">
+    <span>I.E. nivel primaria “Luz del Saber”</span>
+    <h2>Testimonios</h2>
+
+    <div class="testimonial-content container">
+        <div class="testimonial-1">
+            <img class="face"
+                 th:src="@{imgs/t2.jpeg}"
+                 alt="testimonio 1">
+            <h4>Brandy Alameda</h4>
+            <p> Elegí "Luz del Saber" por su atención personalizada. Mi hija ha mejorado en lectura y ahora llega
+                feliz a casa cada día. ¡La recomiendo 100%!
+            </p>
+            <img class="start" th:src="@{imgs/starts.png}" alt="Estrellas">
+        </div>
+        <div class="testimonial-1">
+            <img class="face" src="imgs/t1.jpeg" alt="testimonio 1">
+            <h4>Francisca Pastor</h4>
+            <p> Lo que más valoro es el ambiente de respeto que se vive aquí. Mi hija ha aprendido a resolver
+                conflictos dialogando, y eso no tiene precio. ¡Gracias por ser nuestra segunda familia!
+            </p>
+            <img class="start" th:src="@{imgs/starts.png}" alt="Estrellas">
+        </div>
+    </div>
+</section>
+
+<main class="information">
+    <div class="information-content">
+        <div class="information-txt">
+            <span>I.E. nivel primaria “Luz del Saber”</span>
+            <h2>Dime un plato tipico del Perú</h2>
+            <hr>
+            <form>
+                <input type="text" placeholder="Ingresa aqui tu respuesta.">
+                <a href="#" class="btn-1">Enviar</a>
+            </form>
+        </div>
+
+        <div class="information-img">
+            <img src="imgs/f1.jpeg" alt="Niños Peruanos">
+        </div>
+    </div>
+
+    <div class="information-content">
+        <div class="information-img">
+            <img src="imgs/f2.jpeg" alt="Niños Peruanos">
+        </div>
+        <div class="information-txt">
+            <span>I.E. nivel primaria “Luz del Saber”</span>
+            <h2>Nuestros Servicios</h2>
+            <hr>
+            <div class="service">
+                <img src="imgs/a1.png" alt="Escuela de Padre">
+                <h3>Escuela de Padres</h3>
+            </div>
+
+            <div class="service">
+                <img src="imgs/a2.png" alt="Escuela de Padre">
+                <h3>Deportes y Desarrollo Motor</h3>
+            </div>
+            <div class="service">
+                <img src="imgs/a3.png" alt="Escuela de Padre">
+                <h3>Programa de Educación Bilingüe </h3>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<section class="blog">
+    <span> I.E. Nivel primaria “Luz del Saber” en el distrito de Puente Piedra, 2025</span>
+    <h2>Nuestras Noticias</h2>
+    <div class="blog-content container">
+        <div class="blog-1">
+            <img src="imgs/n1.png" alt="Noticia 1">
+            <div class="blog-txt">
+                <samp>Ganadores</samp>
+                <h3>Ganadores del Concurso de Spelling Bee 2025</h3>
+                <p>
+                    ¡Nuestros estudiantes de 4° grado obtuvieron el primer lugar en el concurso interescolar de
+                    Spelling Bee! Felicitaciones a María Fernández y Luis Díaz por su excelente vocabulario y
+                    pronunciación en inglés.
+                </p>
+            </div>
+        </div>
+        <div class="blog-1">
+            <img src="imgs/n3.png" alt="Noticia 2">
+            <div class="blog-txt">
+                <samp>Feria</samp>
+                <h3>Feria de Ciencias con Proyectos Innovadores</h3>
+                <p>
+                    Los proyectos de robótica con material reciclado y los experimentos de energía solar fueron los
+                    protagonistas de nuestra Feria de Ciencias anual. ¡Aprendizaje práctico que inspira!
+                </p>
+            </div>
+        </div>
+        <div class="blog-1">
+            <img src="imgs/n2.png" alt="Noticia 2">
+            <div class="blog-txt">
+                <samp>Jornada Ecológica</samp>
+                <h3>Jornada Ecológica "Plantando Futuro"</h3>
+                <p>
+                    El pasado viernes, alumnos y docentes sembraron 50 árboles nativos en el parque local. Esta
+                    iniciativa promueve la conciencia ambiental y el amor por la naturaleza en nuestra comunidad
+                    educativa.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="contac">
+    <div class="contat-content">
+            <span>
+                I.E. nivel primaria “Luz del Saber”
+            </span>
+        <h2>
+            +51 002-502-8112
+        </h2>
+        <p> En "Luz del Saber", cultivamos valores, creatividad y excelencia académica en un ambiente seguro e
+            inclusivo.</p>
+        <a href="#" class="btn-1">Mas Informacion</a>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-content container">
+        <div class="link">
+            <h3>Contacto</h3>
+            <ul>
+                <li><a href="#">Informacion</a></li>
+                <li><a href="#">Contactanos</a></li>
+            </ul>
+        </div>
+        <div class="link">
+            <h3>Contacto</h3>
+            <ul>
+                <li><a href="#">Informacion</a></li>
+                <li><a href="#">Contactanos</a></li>
+            </ul>
+        </div>
+        <div class="link">
+            <h3>Contacto</h3>
+            <ul>
+                <li><a href="#">Informacion</a></li>
+                <li><a href="#">Contactanos</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<p class="team">Desarollo por Grupo N° &#9829;
+    | Ingeniería de Software. &copy; 2025. | Todos los derechos son reservados.</p>
+
+</body>
+
+</html>

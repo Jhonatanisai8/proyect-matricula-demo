@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title" th:text="${'Detalles del Curso: ' + curso.nombreCurso}"></title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-book-fill me-2"></i>Detalles del Curso
+    </h1>
+    <p class="lead text-muted mb-0" th:text="${'Información completa del curso: ' + curso.nombreCurso}"></p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary" th:text="${'Información de ' + curso.nombreCurso}"></h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>ID del Curso:</strong> <span th:text="${curso.idCurso}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Nombre del Curso:</strong> <span th:text="${curso.nombreCurso}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Código del Curso:</strong> <span th:text="${curso.codigoCurso}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Grado Asociado:</strong> <span th:text="${curso.nombreGrado ?: 'N/A'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Área de Conocimiento:</strong> <span
+                            th:text="${curso.areaConocimiento ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Créditos:</strong> <span th:text="${curso.creditos ?: 'N/A'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Horas Semanales:</strong> <span th:text="${curso.horasSemanales ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Obligatorio:</strong>
+                        <i th:class="${curso.esObligatorio ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        <span th:text="${curso.esObligatorio ? 'Sí' : 'No'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <strong>Descripción:</strong> <span th:text="${curso.descripcion ?: 'N/A'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <strong>Prerequisitos:</strong> <span th:text="${curso.prerequisitos ?: 'N/A'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <strong>Competencias:</strong> <span th:text="${curso.competencias ?: 'N/A'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Activo:</strong>
+                        <i th:class="${curso.activo ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        <span th:text="${curso.activo ? 'Sí' : 'No'}"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-start mt-4">
+                    <a th:href="@{/admin/cursos}" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Volver al Listado
+                    </a>
+                    <a th:href="@{/admin/cursos/editar/{id}(id=${curso.idCurso})}" class="btn btn-warning">
+                        <i class="bi bi-pencil me-1"></i> Editar Curso
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

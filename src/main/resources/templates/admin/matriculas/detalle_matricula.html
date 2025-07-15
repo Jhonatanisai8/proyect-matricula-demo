@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title">Detalle de Matrícula</title>
+</head>
+<body>
+<header layout:fragment="header" class="mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Detalle de Matrícula</h1>
+</header>
+
+<section layout:fragment="content">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary" th:text="'Matrícula #' + ${matricula.numeroMatricula}"></h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h5>Información General</h5>
+                    <p><strong>Número de Matrícula:</strong> <span th:text="${matricula.numeroMatricula}"></span></p>
+                    <p><strong>Fecha de Matrícula:</strong> <span
+                            th:text="${#temporals.format(matricula.fechaMatricula, 'dd-MM-yyyy')}"></span></p>
+                    <p><strong>Estado de Matrícula:</strong> <span th:text="${matricula.estadoMatricula}"></span></p>
+                    <p><strong>Modalidad de Pago:</strong> <span th:text="${matricula.modalidadPago}"></span></p>
+                    <p><strong>Monto Matrícula:</strong> <span
+                            th:text="${#numbers.formatCurrency(matricula.montoMatricula)}"></span></p>
+                    <p><strong>Monto Pensión:</strong> <span
+                            th:text="${#numbers.formatCurrency(matricula.montoPension)}"></span></p>
+                    <p><strong>Documentos Pendientes:</strong> <span
+                            th:text="${matricula.documentosPendientes != null and !matricula.documentosPendientes.isEmpty()} ? ${matricula.documentosPendientes} : 'Ninguno'"></span>
+                    </p>
+                    <p><strong>Observaciones:</strong> <span
+                            th:text="${matricula.observaciones != null and !matricula.observaciones.isEmpty()} ? ${matricula.observaciones} : 'N/A'"></span>
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <h5>Detalles del Estudiante</h5>
+                    <p><strong>Estudiante:</strong> <span th:text="${matricula.nombreCompletoEstudiante}"></span></p>
+                    <p><strong>Código de Estudiante:</strong> <span th:text="${matricula.codigoEstudiante}"></span></p>
+                    <p><strong>Grado:</strong> <span th:text="${matricula.nombreGrado}"></span></p>
+                    <p><strong>Sección:</strong> <span th:text="${matricula.nombreSeccion}"></span></p>
+                    <p><strong>Período Académico:</strong> <span th:text="${matricula.nombrePeriodoAcademico}"></span>
+                    </p>
+
+                    <h5>Datos del Apoderado que Realiza la Matrícula</h5>
+                    <p><strong>Apoderado:</strong> <span th:text="${matricula.nombreApoderadoRealiza}"></span></p>
+                    <p><strong>DNI del Apoderado:</strong> <span th:text="${matricula.dniApoderadoRealiza}"></span></p>
+                </div>
+            </div>
+            <hr>
+            <a th:href="@{/matriculas}" class="btn btn-secondary">Volver al Listado</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

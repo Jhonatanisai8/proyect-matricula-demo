@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/student-layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Mi Horario</title>
+    <th:block layout:fragment="styles">
+        <style>
+            .horario-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+                font-size: 0.9em;
+            }
+
+            .horario-table th, .horario-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .horario-table th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+
+            .horario-table td.empty-slot {
+                background-color: #f9f9f9;
+                color: #aaa;
+            }
+
+            .course-info {
+                font-weight: bold;
+                color: #333;
+                display: block;
+            }
+
+            .teacher-info {
+                font-size: 0.9em;
+                color: #555;
+                display: block;
+            }
+
+            .room-info {
+                font-size: 0.85em;
+                color: #777;
+                display: block;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<header layout:fragment="header" class="mb-4 pb-3 border-bottom custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="fas fa-calendar-alt me-2"></i>Mi Horario Escolar
+    </h1>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <!-- Información de matrícula -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary-custom py-3">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Información de Matrícula Actual</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${horarioData.nombreEstudiante != null}">
+                    <p><strong>Estudiante:</strong> <span th:text="${horarioData.nombreEstudiante}"></span></p>
+                    <p><strong>Grado Actual:</strong> <span th:text="${horarioData.gradoActual}"></span></p>
+                    <p><strong>Sección Actual:</strong> <span th:text="${horarioData.seccionActual}"></span></p>
+                    <p><strong>Periodo Académico:</strong> <span th:text="${horarioData.periodoAcademicoActual}"></span>
+                    </p>
+                </div>
+                <div th:unless="${horarioData.nombreEstudiante != null}" class="alert alert-warning text-center">
+                    No se pudo cargar la información de matrícula.
+                </div>
+            </div>
+        </div>
+
+        <!-- Error general -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Horario -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary-custom py-3">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i> Horario de Clases</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${horarioData.mensajeSinHorario != null}" class="alert alert-info text-center">
+                    <p class="lead mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span th:text="${horarioData.mensajeSinHorario}"></span>
+                    </p>
+                </div>
+
+                <div th:unless="${horarioData.mensajeSinHorario != null}" class="table-responsive">
+                    <table class="horario-table table table-bordered table-sm">
+                        <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th th:each="dia : ${horarioData.diasOrdenados}" th:text="${dia}">Día</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="hora : ${horasDelDia}">
+                            <td th:text="${hora}">08:00 - 09:00</td>
+                            <td th:each="dia : ${diasOrdenados}">
+                                <th:block th:with="clase=${horarioData.getClasePara(dia, hora)}">
+                                    <div th:if="${clase != null}">
+                                        <span class="course-info" th:text="${clase.nombreCurso}"></span>
+                                        <span class="teacher-info" th:text="${clase.nombreDocente}"></span>
+                                        <span class="room-info" th:text="${clase.nombreSalon}"></span>
+                                    </div>
+                                    <div th:if="${clase == null}" class="empty-slot">-</div>
+                                </th:block>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

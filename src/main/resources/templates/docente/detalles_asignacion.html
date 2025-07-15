@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-docente.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Detalles de Asignación</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+              integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KenTlPMBOX/I7PmO7NveS/JwSgD7gefdgRz0B+oNcGTyNP8Qy0g=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <style>
+            .detail-card .card-header {
+                background-color: #f8f9fa;
+                border-bottom: 1px solid #e9ecef;
+                font-weight: bold;
+                color: #343a40;
+            }
+
+            .detail-item {
+                padding: 8px 0;
+                border-bottom: 1px dotted #dee2e6;
+            }
+
+            .detail-item:last-child {
+                border-bottom: none;
+            }
+
+            .detail-item strong {
+                display: inline-block;
+                width: 150px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <header class="mb-4 d-flex justify-content-between align-items-center">
+            <h1 class="h3 text-primary"><i class="fas fa-chalkboard-teacher me-2"></i> Detalles de la Asignación</h1>
+            <a th:href="@{/docente/mis_cursos}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Volver a Mis Cursos
+            </a>
+        </header>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i> <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow-sm mb-4 detail-card">
+            <div class="card-header"><i class="fas fa-info-circle me-2"></i> Información General de la Asignación</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="detail-item"><strong>ID Asignación:</strong> <span
+                                th:text="${asignacion.idAsignacion}"></span></p>
+                        <p class="detail-item"><strong>Docente:</strong> <span
+                                th:text="${asignacion.nombreDocente}"></span></p>
+                        <p class="detail-item"><strong>Fecha Asignación:</strong>
+                            <span th:if="${asignacion.fechaAsignacion != null}"
+                                  th:text="${#temporals.format(asignacion.fechaAsignacion, 'dd/MM/yyyy')}"></span>
+                            <span th:unless="${asignacion.fechaAsignacion != null}">N/A</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="detail-item"><strong>Es Titular:</strong>
+                            <span th:if="${asignacion.esTitular}" class="badge bg-success"><i
+                                    class="fas fa-check-circle"></i> Sí</span>
+                            <span th:unless="${asignacion.esTitular}" class="badge bg-danger"><i
+                                    class="fas fa-times-circle"></i> No</span>
+                        </p>
+                        <p class="detail-item"><strong>Estado:</strong>
+                            <span th:if="${asignacion.estadoAsignacion == 'ACTIVO'}"
+                                  class="badge bg-success"
+                                  th:text="${asignacion.estadoAsignacion}"></span>
+                            <span th:if="${asignacion.estadoAsignacion == 'INACTIVO'}"
+                                  class="badge bg-danger"
+                                  th:text="${asignacion.estadoAsignacion}"></span>
+                            <span th:if="${asignacion.estadoAsignacion == 'PENDIENTE'}"
+                                  class="badge bg-warning text-dark"
+                                  th:text="${asignacion.estadoAsignacion}"></span>
+                            <span th:if="${asignacion.estadoAsignacion == null or asignacion.estadoAsignacion.isEmpty() or (asignacion.estadoAsignacion != 'ACTIVO' and asignacion.estadoAsignacion != 'INACTIVO' and asignacion.estadoAsignacion != 'PENDIENTE')}"
+                                  class="badge bg-secondary"
+                                  th:text="${asignacion.estadoAsignacion != null and !asignacion.estadoAsignacion.isEmpty() ? asignacion.estadoAsignacion : 'Desconocido'}"></span>
+                        </p>
+                        <p class="detail-item" th:if="${asignacion.observaciones}"><strong>Observaciones:</strong> <span
+                                th:text="${asignacion.observaciones}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4 detail-card" th:if="${asignacion.curso != null}">
+            <div class="card-header"><i class="fas fa-book me-2"></i> Detalles del Curso</div>
+            <div class="card-body" th:object="${asignacion.curso}">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="detail-item"><strong>Código:</strong> <span th:text="*{codigoCurso}"></span></p>
+                        <p class="detail-item"><strong>Nombre:</strong> <span th:text="*{nombreCurso}"></span></p>
+                        <p class="detail-item" th:if="*{areaConocimiento}"><strong>Área:</strong> <span
+                                th:text="*{areaConocimiento}"></span></p>
+                        <p class="detail-item" th:if="*{creditos}"><strong>Créditos:</strong> <span
+                                th:text="*{creditos}"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="detail-item" th:if="*{horasSemanales}"><strong>Hrs. Semanales:</strong> <span
+                                th:text="*{horasSemanales}"></span></p>
+                        <p class="detail-item"><strong>Obligatorio:</strong>
+                            <span th:if="*{esObligatorio}" class="badge bg-success"><i
+                                    class="fas fa-check"></i> Sí</span>
+                            <span th:unless="*{esObligatorio}" class="badge bg-danger"><i
+                                    class="fas fa-times"></i> No</span>
+                        </p>
+                        <p class="detail-item" th:if="*{prerequisitos}"><strong>Prerrequisitos:</strong> <span
+                                th:text="*{prerequisitos}"></span></p>
+                    </div>
+                </div>
+                <div class="detail-item" th:if="*{descripcion}"><strong>Descripción:</strong> <span
+                        th:text="*{descripcion}"></span></div>
+                <div class="detail-item" th:if="*{competencias}"><strong>Competencias:</strong> <span
+                        th:text="*{competencias}"></span></div>
+            </div>
+        </div>
+        <div th:unless="${asignacion.curso != null}" class="alert alert-warning text-center">
+            <p class="mb-0"><i class="fas fa-exclamation-triangle me-1"></i> Información del curso no disponible.</p>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4 detail-card" th:if="${asignacion.grado != null}">
+                    <div class="card-header"><i class="fas fa-graduation-cap me-2"></i> Detalles del Grado</div>
+                    <div class="card-body" th:object="${asignacion.grado}">
+                        <p class="detail-item"><strong>Nombre:</strong> <span th:text="*{nombreGrado}"></span></p>
+                        <p class="detail-item" th:if="*{nivel}"><strong>Nivel:</strong> <span th:text="*{nivel}"></span>
+                        </p>
+                        <p class="detail-item" th:if="*{codigoGrado}"><strong>Código:</strong> <span
+                                th:text="*{codigoGrado}"></span></p>
+                    </div>
+                </div>
+                <div th:unless="${asignacion.grado != null}" class="alert alert-warning text-center">
+                    <p class="mb-0"><i class="fas fa-exclamation-triangle me-1"></i> Información del grado no
+                        disponible.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4 detail-card" th:if="${asignacion.periodoAcademico != null}">
+                    <div class="card-header"><i class="fas fa-calendar-alt me-2"></i> Detalles del Período Académico
+                    </div>
+                    <div class="card-body" th:object="${asignacion.periodoAcademico}">
+                        <p class="detail-item"><strong>Nombre:</strong> <span th:text="*{nombrePeriodo}"></span></p>
+                        <p class="detail-item"><strong>Año:</strong> <span th:text="*{anoAcademico}"></span></p>
+                        <p class="detail-item"><strong>Inicio:</strong>
+                            <span th:if="*{fechaInicio != null}"
+                                  th:text="${#temporals.format(asignacion.periodoAcademico.fechaInicio, 'dd/MM/yyyy')}"></span>
+                            <span th:unless="*{fechaInicio != null}">N/A</span>
+                        </p>
+                        <p class="detail-item"><strong>Fin:</strong>
+                            <span th:if="*{fechaFin != null}"
+                                  th:text="${#temporals.format(asignacion.periodoAcademico.fechaFin, 'dd/MM/yyyy')}"></span>
+                            <span th:unless="*{fechaFin != null}">N/A</span>
+                        </p>
+                        <p class="detail-item"><strong>Estado:</strong> <span th:text="*{estado}"></span></p>
+                    </div>
+                </div>
+                <div th:unless="${asignacion.periodoAcademico != null}" class="alert alert-warning text-center">
+                    <p class="mb-0"><i class="fas fa-exclamation-triangle me-1"></i> Información del período académico
+                        no disponible.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4 detail-card">
+            <div class="card-header"><i class="fas fa-clock me-2"></i> Horarios Asignados (Todas las Secciones)</div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(asignacion.horarios)}" class="alert alert-info text-center">
+                    <p class="mb-0"><i class="fas fa-exclamation-circle me-1"></i> No hay horarios definidos para esta
+                        asignación en ninguna sección.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(asignacion.horarios)}" class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Día</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora Fin</th>
+                            <th>Salón</th>
+                            <th>Sección</th>
+                            <th>Tipo de Clase</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="horario : ${asignacion.horarios}">
+                            <td th:text="${horario.diaSemana}"></td>
+                            <td th:text="${horario.horaInicio != null ? #temporals.format(horario.horaInicio, 'HH:mm') : 'N/A'}"></td>
+                            <td th:text="${horario.horaFin != null ? #temporals.format(horario.horaFin, 'HH:mm') : 'N/A'}"></td>
+                            <td th:text="${horario.salon?.nombreSalon ?: 'N/A'}"></td>
+                            <td th:text="${horario.seccion?.nombreSeccion ?: 'N/A'}"></td>
+                            <td th:text="${horario.tipoClase}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4 detail-card">
+            <div class="card-header"><i class="fas fa-users me-2"></i> Estudiantes Matriculados (en el Grado y Período)
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(asignacion.estudiantes)}" class="alert alert-info text-center">
+                    <p class="mb-0"><i class="fas fa-exclamation-circle me-1"></i> No hay estudiantes matriculados en
+                        este grado y período aún.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(asignacion.estudiantes)}" class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombres Completos</th>
+                            <th>DNI</th>
+                            <th>Sección</th>
+                            <th>Estado Matrícula</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="estudiante : ${asignacion.estudiantes}">
+                            <td th:text="${estudiante.codigoEstudiante}"></td>
+                            <td><span th:text="${estudiante.nombresCompletos}"></span></td>
+                            <td th:text="${estudiante.dni}"></td>
+                            <td th:text="${estudiante.nombreSeccion ?: 'N/A'}"></td>
+                            <td th:text="${estudiante.estadoMatricula}"></td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

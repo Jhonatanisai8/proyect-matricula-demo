@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/student-layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title">Mis Cursos</title>
+    <th:block layout:fragment="styles">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+              integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KenTlPMBOX/I7PmO7NveS/JwSgD7gefdgRz0B+oNcGTyNP8Qy0g=="
+              crossorigin="anonymous" referrerpolicy="no-referrer"/>
+        <style>
+            .card-header.bg-primary-custom {
+                background-image: linear-gradient(to right, #007bff, #0056b3);
+                border-bottom: 1px solid rgba(0, 0, 0, .125);
+                color: white;
+            }
+
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+
+            .course-description {
+                max-height: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <div class="container mt-4">
+        <header class="mb-4 d-flex justify-content-between align-items-center">
+            <h1 class="h3 text-primary"><i class="fas fa-book me-2"></i> Mis Cursos</h1>
+            <a th:href="@{/estudiante/dashboard}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Volver al Dashboard
+            </a>
+        </header>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary-custom py-3">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Información de Matrícula</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Estudiante:</strong> <span
+                                th:text="${cursosData.nombreEstudiante}"></span></p>
+                        <p class="mb-1"><strong>Grado Actual:</strong> <span th:text="${cursosData.gradoActual}"></span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Sección Actual:</strong> <span
+                                th:text="${cursosData.seccionActual}"></span></p>
+                        <p class="mb-1"><strong>Periodo Académico:</strong> <span
+                                th:text="${cursosData.periodoAcademicoActual}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary-custom py-3">
+                <h5 class="mb-0"><i class="fas fa-list-alt me-2"></i> Listado de Cursos Matriculados</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${cursosData.cursosMatriculados.isEmpty()}" class="alert alert-info text-center"
+                     role="alert">
+                    <p class="lead mb-0"><i class="fas fa-info-circle me-2"></i> <span
+                            th:text="${cursosData.mensajeSinCursos}">No hay cursos asignados a tu matrícula actual.</span>
+                    </p>
+                </div>
+                <div th:unless="${cursosData.cursosMatriculados.isEmpty()}" class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre del Curso</th>
+                            <th>Área</th>
+                            <th>Créditos</th>
+                            <th>Horas Semanales</th>
+                            <th>Docente</th>
+                            <th>Horario Principal</th>
+                            <th>Salón</th>
+                            <th>Descripción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="curso : ${cursosData.cursosMatriculados}">
+                            <td th:text="${curso.codigoCurso}"></td>
+                            <td th:text="${curso.nombreCurso}"></td>
+                            <td th:text="${curso.areaConocimiento}"></td>
+                            <td th:text="${curso.creditos}"></td>
+                            <td th:text="${curso.horasSemanales}"></td>
+                            <td th:text="${curso.nombreDocente}"></td>
+                            <td>
+                                    <span th:if="${curso.diaSemana != 'N/A'}"
+                                          th:text="${curso.diaSemana + ' ' + #temporals.format(curso.horaInicio, 'HH:mm') + ' - ' + #temporals.format(curso.horaFin, 'HH:mm')}">
+                                    </span>
+                                <span th:unless="${curso.diaSemana != 'N/A'}">No asignado</span>
+                            </td>
+                            <td th:text="${curso.nombreSalon}"></td>
+                            <td>
+                                <span class="course-description" th:text="${curso.descripcion}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+</th:block>
+</body>
+</html>

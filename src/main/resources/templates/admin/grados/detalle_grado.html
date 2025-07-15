@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title" th:text="${'Detalles del Grado: ' + grado.nombreGrado}"></title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-mortarboard-fill me-2"></i>Detalles del Grado
+    </h1>
+    <p class="lead text-muted mb-0" th:text="${'Información completa del grado: ' + grado.nombreGrado}"></p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary" th:text="${'Información de ' + grado.nombreGrado}"></h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>ID del Grado:</strong> <span th:text="${grado.idGrado}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Nombre del Grado:</strong> <span th:text="${grado.nombreGrado}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Código del Grado:</strong> <span th:text="${grado.codigoGrado}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Nivel Educativo:</strong> <span th:text="${grado.nivel}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Edad Mínima:</strong> <span th:text="${grado.edadMinima}"></span> años
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Edad Máxima:</strong> <span th:text="${grado.edadMaxima}"></span> años
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Cupos Disponibles:</strong> <span th:text="${grado.cuposDisponibles}"></span>
+                    </div>
+                    <!--                    <div class="col-md-6">-->
+                    <!--                        <strong>Pensión Mensual:</strong> <span-->
+                    <!--                            th:text="${#numbers.formatCurrency(grado.pensionMensual)}"></span>-->
+                    <!--                    </div>-->
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Descripción:</strong> <span th:text="${grado.descripcion ?: 'N/A'}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Orden:</strong> <span th:text="${grado.orden ?: 'N/A'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Activo:</strong>
+                        <i th:class="${grado.activo ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        <span th:text="${grado.activo ? 'Sí' : 'No'}"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-start mt-4">
+                    <a th:href="@{/admin/grados}" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Volver al Listado
+                    </a>
+                    <a th:href="@{/admin/grados/editar/{id}(id=${grado.idGrado})}" class="btn btn-warning">
+                        <i class="bi bi-pencil me-1"></i> Editar Grado
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

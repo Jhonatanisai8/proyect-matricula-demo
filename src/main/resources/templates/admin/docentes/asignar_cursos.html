@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title" th:text="'Asignar Cursos a ' + ${docente.nombresCompletos}"></title>
+
+    <th:block layout:fragment="styles">
+        <style>
+            .form-section-title {
+                background-color: #f8f9fa;
+                padding: 10px 15px;
+                border-bottom: 1px solid #e9ecef;
+                margin-bottom: 1rem;
+                font-weight: bold;
+                color: #343a40;
+                border-radius: 5px 5px 0 0;
+            }
+
+            .error-message {
+                color: #dc3545;
+                font-size: 0.875em;
+                margin-top: 0.25rem;
+            }
+
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: rgba(0, 0, 0, 0.03);
+            }
+
+            .table th, .table td {
+                vertical-align: middle;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i class="bi bi-journal-check me-2"></i>Asignar Cursos a Docente</h1>
+        <div>
+            <a th:href="@{/admin/docentes/{id}(id=${docente.idDocente})}" class="btn btn-outline-info me-2">
+                <i class="bi bi-arrow-left me-1"></i> Volver al Detalle del Docente
+            </a>
+            <a th:href="@{/admin/docentes}" class="btn btn-outline-secondary">
+                <i class="bi bi-list-ul me-1"></i> Volver al Listado de Docentes
+            </a>
+        </div>
+    </header>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0" th:text="'Asignar nuevo curso a ' + ${docente.nombresCompletos}"></h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/docentes/asignar-cursos}" th:object="${asignacionDocenteDTO}" method="post">
+                <input type="hidden" th:field="*{idDocente}" th:value="${docente.idDocente}">
+                <input type="hidden" th:field="*{idAsignacion}">
+
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger alert-dismissible fade show"
+                     role="alert">
+                    <div th:each="err : ${#fields.globalErrors()}" th:text="${err}">Error global</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="idCurso" class="form-label">Curso <span class="text-danger">*</span></label>
+                        <select id="idCurso" class="form-select" th:field="*{idCurso}"
+                                th:classappend="${#fields.hasErrors('idCurso') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione un curso</option>
+                            <option th:each="curso : ${cursos}" th:value="${curso.idCurso}"
+                                    th:text="${curso.nombreCurso} + ' (' + ${curso.codigoCurso} + ')'"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idCurso')}"
+                             th:errors="*{idCurso}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="idGrado" class="form-label">Grado <span class="text-danger">*</span></label>
+                        <select id="idGrado" class="form-select" th:field="*{idGrado}"
+                                th:classappend="${#fields.hasErrors('idGrado') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione un grado</option>
+                            <option th:each="grado : ${grados}" th:value="${grado.idGrado}"
+                                    th:text="${grado.nombreGrado}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idGrado')}"
+                             th:errors="*{idGrado}"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="idPeriodoAcademico" class="form-label">Período Académico <span
+                                class="text-danger">*</span></label>
+                        <select id="idPeriodoAcademico" class="form-select" th:field="*{idPeriodoAcademico}"
+                                th:classappend="${#fields.hasErrors('idPeriodoAcademico') ? 'is-invalid' : ''}">
+                            <option value="">Seleccione un período</option>
+                            <option th:each="periodo : ${periodosAcademicos}" th:value="${periodo.idPeriodo}"
+                                    th:text="${periodo.nombrePeriodo} + ' (' + ${periodo.anoAcademico} + ')'"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idPeriodoAcademico')}"
+                             th:errors="*{idPeriodoAcademico}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="fechaAsignacion" class="form-label">Fecha de Asignación <span
+                                class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="fechaAsignacion" th:field="*{fechaAsignacion}"
+                               th:classappend="${#fields.hasErrors('fechaAsignacion') ? 'is-invalid' : ''}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaAsignacion')}"
+                             th:errors="*{fechaAsignacion}"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="esTitular" th:field="*{esTitular}">
+                        <label class="form-check-label" for="esTitular">¿Es Docente Titular?</label>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('esTitular')}"
+                             th:errors="*{esTitular}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="estadoAsignacion" class="form-label">Estado de Asignación</label>
+                        <input type="text" class="form-control" id="estadoAsignacion" th:field="*{estadoAsignacion}"
+                               th:classappend="${#fields.hasErrors('estadoAsignacion') ? 'is-invalid' : ''}"
+                               maxlength="50" placeholder="Ej: ACTIVA, FINALIZADA">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('estadoAsignacion')}"
+                             th:errors="*{estadoAsignacion}"></div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="observaciones" class="form-label">Observaciones</label>
+                    <textarea class="form-control" id="observaciones" th:field="*{observaciones}" rows="3"
+                              th:classappend="${#fields.hasErrors('observaciones') ? 'is-invalid' : ''}"
+                              maxlength="255"></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('observaciones')}"
+                         th:errors="*{observaciones}"></div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="submit" class="btn btn-primary me-md-2">
+                        <i class="bi bi-plus-circle me-1"></i> Asignar Curso
+                    </button>
+                    <a th:href="@{/admin/docentes/{id}(id=${docente.idDocente})}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Asignaciones Existentes para <span th:text="${docente.nombresCompletos}"></span></h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(asignacionesExistentes)}" class="alert alert-warning text-center">
+                Este docente aún no tiene cursos asignados.
+            </div>
+            <div th:unless="${#lists.isEmpty(asignacionesExistentes)}" class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Curso</th>
+                        <th>Grado</th>
+                        <th>Periodo Académico</th>
+                        <th>Fecha Asignación</th>
+                        <th>Titular</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="asignacion : ${asignacionesExistentes}">
+                        <td th:text="${asignacion.curso.nombreCurso}"></td>
+                        <td th:text="${asignacion.grado.nombreGrado}"></td>
+                        <td th:text="${asignacion.periodoAcademico.nombrePeriodo}"></td>
+                        <td th:text="${#temporals.format(asignacion.fechaAsignacion, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <i th:class="${asignacion.esTitular ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        </td>
+                        <td th:text="${asignacion.estadoAsignacion}"></td>
+                        <td>
+                            <form th:action="@{/admin/docentes/asignar-cursos/eliminar/{id}(id=${asignacion.idAsignacion}, idDocente=${docente.idDocente})}"
+                                  method="post" style="display:inline;"
+                                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta asignación?');">
+                                <button type="submit" class="btn btn-danger btn-sm" title="Eliminar Asignación">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<th:block layout:fragment="scripts">
+</th:block>
+</body>
+</html>

@@ -1,0 +1,100 @@
+@media(max-width:991px) {
+    .menu {
+        padding: 20px;
+    }
+
+    .menu label {
+        display: initial;
+    }
+
+    .menu .nabvar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #070600;
+        display: none;
+    }
+
+    .menu .nabvar ul li {
+        width: 100%;
+
+    }
+
+    .menu .nabvar ul li a:hover {
+        color: #F7F7FF;
+    }
+
+    #menu:checked~.nabvar {
+        display: initial;
+    }
+
+    .header {
+        min-height: 0vh;
+        padding: 100px 30px;
+    }
+
+    .header-txt {
+        text-align: center;
+        padding: 0;
+    }
+
+    .about {
+        padding: 30px;
+    }
+
+    .about-content {
+        flex-direction: column;
+    }
+
+    .testimonial {
+        padding: 30px;
+    }
+
+    .testimonial-content {
+        flex-direction: column;
+    }
+
+    .testimonial-1 {
+        margin-bottom: 30px;
+    }
+
+    .information {
+        padding: 30px;
+    }
+
+    .information-content {
+        flex-direction: column;
+    }
+
+    .information-txt {
+        order: -2;
+        padding: 0;
+        margin: 30px 0;
+    }
+
+    .blog {
+        padding: 30px;
+    }
+
+    .blog-content {
+        flex-direction: column;
+    }
+
+    .blog-1 {
+        margin-bottom: 30px;
+    }
+
+    .contac {
+        padding: 100px 30px;
+    }
+
+    .footer {
+        padding: 30px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}

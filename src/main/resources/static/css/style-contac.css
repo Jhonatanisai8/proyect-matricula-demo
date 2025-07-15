@@ -1,0 +1,12 @@
+.contac {
+    padding: 100px;
+    background: linear-gradient(rgba(29, 30, 35, 0.8),
+            rgba(29, 30, 35, 0.8)), url('/imgs/fondo2.png');
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.contat-content {
+    text-align: center;
+}

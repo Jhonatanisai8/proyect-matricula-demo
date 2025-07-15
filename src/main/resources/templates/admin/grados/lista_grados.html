@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title">Listado de Grados</title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-mortarboard-fill me-2"></i>Gestión de Grados
+    </h1>
+    <p class="lead text-muted mb-0">Administra los niveles educativos de la institución.</p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Grados Registrados</h6>
+                <a th:href="@{/admin/grados/nuevo}" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-circle-fill me-1"></i> Registrar Nuevo Grado
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Código</th>
+                            <th>Nivel</th>
+                            <th>Cupos</th>
+                            <!--                            <th>Pensión Mensual</th>-->
+                            <th>Activo</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="grado : ${grados.content}">
+                            <td th:text="${grado.idGrado}"></td>
+                            <td th:text="${grado.nombreGrado}"></td>
+                            <td th:text="${grado.codigoGrado}"></td>
+                            <td th:text="${grado.nivel}"></td>
+                            <td th:text="${grado.cuposDisponibles}"></td>
+                            <!--                            <td th:text="${#numbers.formatCurrency(grado.pensionMensual)}"></td>-->
+                            <td>
+                                <i th:class="${grado.activo ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                                <span th:text="${grado.activo ? 'Sí' : 'No'}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/admin/grados/detalle/{id}(id=${grado.idGrado})}"
+                                   class="btn btn-info btn-sm" title="Ver Detalles">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a th:href="@{/admin/grados/editar/{id}(id=${grado.idGrado})}"
+                                   class="btn btn-warning btn-sm mx-1" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" class="btn btn-danger btn-sm delete-button"
+                                        th:data-id="${grado.idGrado}"
+                                        th:data-nombre="${grado.nombreGrado}"
+                                        title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <a th:href="@{/admin/grados/toggleActivo/{id}(id=${grado.idGrado})}"
+                                   th:class="${grado.activo ? 'btn btn-secondary btn-sm ms-1' : 'btn btn-success btn-sm ms-1'}"
+                                   th:title="${grado.activo ? 'Desactivar Grado' : 'Activar Grado'}">
+                                    <i th:class="${grado.activo ? 'bi bi-toggle-off' : 'bi bi-toggle-on'}"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav aria-label="Paginación de grados" th:if="${grados.totalPages > 1}">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${grados.number == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/grados(page=${0}, size=${grados.size})}"
+                               aria-label="Primera">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${grados.number == 0 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               th:href="@{/admin/grados(page=${grados.number - 1}, size=${grados.size})}"
+                               aria-label="Anterior">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, grados.totalPages - 1)}"
+                            th:classappend="${i == grados.number ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/grados(page=${i}, size=${grados.size})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${grados.number == grados.totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               th:href="@{/admin/grados(page=${grados.number + 1}, size=${grados.size})}"
+                               aria-label="Siguiente">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${grados.number == grados.totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               th:href="@{/admin/grados(page=${grados.totalPages - 1}, size=${grados.size})}"
+                               aria-label="Última">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script layout:fragment="scripts">
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const gradoId = this.dataset.id;
+                const nombreGrado = this.dataset.nombre;
+
+                if (typeof Swal !== 'undefined') { // Verifica si SweetAlert2 está cargado
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: `El grado "${nombreGrado}" será eliminado. ¡No podrás revertir esto!`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `/admin/grados/eliminar/${gradoId}`;
+                        }
+                    });
+                } else {
+                    // Fallback a confirmación nativa del navegador
+                    if (confirm(`¿Estás seguro de que quieres eliminar al grado "${nombreGrado}"?`)) {
+                        window.location.href = `/admin/grados/eliminar/${gradoId}`;
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

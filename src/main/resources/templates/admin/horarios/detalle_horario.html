@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:fragment="title"
+           th:text="'Detalle de Horario: ' + ${horario.diaSemana} + ' ' + ${#temporals.format(horario.horaInicio, 'HH:mm')}"></title>
+</head>
+<body>
+<section layout:fragment="content" class="flex-grow-1 container-fluid">
+    <header class="mb-4 d-flex justify-content-between align-items-center">
+        <h1 class="h3"><i class="bi bi-info-circle me-2"></i> Detalle de Horario</h1>
+        <div>
+            <a th:href="@{/admin/horarios/editar/{id}(id=${horario.idHorario})}" class="btn btn-warning me-2">
+                <i class="bi bi-pencil me-1"></i> Editar Horario
+            </a>
+            <a th:href="@{/admin/horarios}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Volver al Listado
+            </a>
+        </div>
+    </header>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"
+                th:text="'Información del Horario: ' + ${horario.diaSemana} + ' (' + ${#temporals.format(horario.horaInicio, 'HH:mm')} + ' - ' + ${#temporals.format(horario.horaFin, 'HH:mm')} + ')'"></h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <strong>ID de Horario:</strong> <span th:text="${horario.idHorario}"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Estado:</strong>
+                    <span th:if="${horario.activo}" class="badge bg-success">Activo</span>
+                    <span th:unless="${horario.activo}" class="badge bg-danger">Inactivo</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Día de la Semana:</strong> <span th:text="${horario.diaSemana}"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Hora de Inicio:</strong> <span
+                        th:text="${#temporals.format(horario.horaInicio, 'HH:mm')}"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Hora de Fin:</strong> <span th:text="${#temporals.format(horario.horaFin, 'HH:mm')}"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Tipo de Clase:</strong> <span th:text="${horario.tipoClase ?: 'N/A'}"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <strong>Observaciones:</strong> <span th:text="${horario.observaciones ?: 'Ninguna'}"></span>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <strong>Curso:</strong> <span th:text="${horario.nombreCurso}"></span> (<span
+                        th:text="${horario.idCurso}"></span>)
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Docente:</strong> <span th:text="${horario.nombreDocente}"></span> (<span
+                        th:text="${horario.idDocente}"></span>)
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Grado:</strong> <span th:text="${horario.nombreGrado}"></span> (<span
+                        th:text="${horario.idGrado}"></span>)
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Período Académico:</strong> <span th:text="${horario.nombrePeriodoAcademico}"></span> (<span
+                        th:text="${horario.idPeriodoAcademico}"></span>)
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Salón:</strong> <span th:text="${horario.nombreSalon}"></span> (<span
+                        th:text="${horario.idSalon}"></span>)
+                </div>
+                <div class="col-md-6 mb-3">
+                    <strong>Sección:</strong> <span th:text="${horario.nombreSeccion}"></span> (<span
+                        th:text="${horario.idSeccion}"></span>)
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title" th:text="${'Detalles del Salón: ' + salon.nombreSalon}"></title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-info-circle-fill me-2"></i>Detalles del Salón
+    </h1>
+    <p class="lead text-muted mb-0" th:text="${'Información completa del salón: ' + salon.nombreSalon}"></p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary" th:text="${'Información de ' + salon.nombreSalon}"></h6>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>ID del Salón:</strong> <span th:text="${salon.idSalon}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Código del Salón:</strong> <span th:text="${salon.codigoSalon}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Nombre del Salón:</strong> <span th:text="${salon.nombreSalon}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Capacidad Máxima:</strong> <span th:text="${salon.capacidadMaxima}"></span> personas
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Ubicación:</strong> <span th:text="${salon.ubicacion}"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Piso:</strong> <span th:text="${salon.piso}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <strong>Descripción:</strong> <span th:text="${salon.descripcion ?: 'N/A'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <strong>Recursos Disponibles:</strong> <span
+                            th:text="${salon.recursosDisponibles ?: 'Ninguno especificado'}"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Tiene Proyector:</strong>
+                        <i th:class="${salon.tieneProyector ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        <span th:text="${salon.tieneProyector ? 'Sí' : 'No'}"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Tiene Aire Acondicionado:</strong>
+                        <i th:class="${salon.tieneAireAcondicionado ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        <span th:text="${salon.tieneAireAcondicionado ? 'Sí' : 'No'}"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Activo:</strong>
+                        <i th:class="${salon.activo ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                        <span th:text="${salon.activo ? 'Sí' : 'No'}"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-start mt-4">
+                    <a th:href="@{/admin/salones}" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Volver al Listado
+                    </a>
+                    <a th:href="@{/admin/salones/editar/{id}(id=${salon.idSalon})}" class="btn btn-warning">
+                        <i class="bi bi-pencil me-1"></i> Editar Salón
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

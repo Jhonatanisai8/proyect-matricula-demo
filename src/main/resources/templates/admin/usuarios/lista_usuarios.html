@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout-admin.html}">
+<head>
+    <meta charset="UTF-8">
+    <title layout:fragment="title">Listado de Usuarios</title>
+</head>
+<body>
+<header layout:fragment="header" class="custom-header-content">
+    <h1 class="h3 mb-0 text-dark-emphasis">
+        <i class="bi bi-people-fill me-2"></i>Gestión de Usuarios
+    </h1>
+    <p class="lead text-muted mb-0">Administra los usuarios del sistema y sus roles.</p>
+</header>
+
+<section layout:fragment="content" class="flex-grow-1">
+    <div class="container-fluid">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle-fill me-2"></i>
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Usuarios Registrados</h6>
+                <a th:href="@{/admin/usuarios/nuevo}" class="btn btn-success btn-sm">
+                    <i class="bi bi-person-plus-fill me-1"></i> Registrar Nuevo Usuario
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Persona Asociada</th>
+                            <th>Rol</th>
+                            <!--                            <th>Último Acceso</th>-->
+                            <th>Activo</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="usuario : ${usuarios.content}">
+                            <td th:text="${usuario.idUsuario}"></td>
+                            <td th:text="${usuario.userName}"></td>
+                            <td th:text="${usuario.nombreCompletoPersona ?: 'N/A'}"></td>
+                            <td th:text="${usuario.rol.descripcion}"></td>
+                            <!--                            <td th:text="${usuario.ultimoAcceso != null ? #temporals.format(usuario.ultimoAcceso, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>-->
+                            <td>
+                                <i th:class="${usuario.activo ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'}"></i>
+                                <span th:text="${usuario.activo ? 'Sí' : 'No'}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/admin/usuarios/detalle/{id}(id=${usuario.idUsuario})}"
+                                   class="btn btn-info btn-sm" title="Ver Detalles">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a th:href="@{/admin/usuarios/editar/{id}(id=${usuario.idUsuario})}"
+                                   class="btn btn-warning btn-sm mx-1" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" class="btn btn-danger btn-sm delete-button"
+                                        th:data-id="${usuario.idUsuario}"
+                                        th:data-username="${usuario.userName}"
+                                        title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <a th:href="@{/admin/usuarios/toggleActivo/{id}(id=${usuario.idUsuario})}"
+                                   th:class="${usuario.activo ? 'btn btn-secondary btn-sm ms-1' : 'btn btn-success btn-sm ms-1'}"
+                                   th:title="${usuario.activo ? 'Desactivar Usuario' : 'Activar Usuario'}">
+                                    <i th:class="${usuario.activo ? 'bi bi-toggle-off' : 'bi bi-toggle-on'}"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav aria-label="Paginación de usuarios" th:if="${usuarios.totalPages > 1}">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${usuarios.number == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/usuarios(page=${0}, size=${usuarios.size})}"
+                               aria-label="Primera">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${usuarios.number == 0 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               th:href="@{/admin/usuarios(page=${usuarios.number - 1}, size=${usuarios.size})}"
+                               aria-label="Anterior">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, usuarios.totalPages - 1)}"
+                            th:classappend="${i == usuarios.number ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/usuarios(page=${i}, size=${usuarios.size})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${usuarios.number == usuarios.totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               th:href="@{/admin/usuarios(page=${usuarios.number + 1}, size=${usuarios.size})}"
+                               aria-label="Siguiente">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${usuarios.number == usuarios.totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link"
+                               th:href="@{/admin/usuarios(page=${usuarios.totalPages - 1}, size=${usuarios.size})}"
+                               aria-label="Última">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script layout:fragment="scripts">
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const usuarioId = this.dataset.id;
+                const username = this.dataset.username;
+
+                if (typeof Swal !== 'undefined') { // Verifica si SweetAlert2 está cargado
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: `El usuario "${username}" será eliminado. ¡No podrás revertir esto!`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = `/admin/usuarios/eliminar/${usuarioId}`;
+                        }
+                    });
+                } else {
+                    // Fallback a confirmación nativa del navegador
+                    if (confirm(`¿Estás seguro de que quieres eliminar al usuario "${username}"?`)) {
+                        window.location.href = `/admin/usuarios/eliminar/${usuarioId}`;
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
